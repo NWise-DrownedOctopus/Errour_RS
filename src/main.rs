@@ -14,7 +14,7 @@ async fn main() {
         draw_circle(screen_width() - 30.0, screen_height() - 30.0, 15.0, YELLOW);
 
         draw_text("IT WORKS!", 20.0, 20.0, 30.0, DARKGRAY);
-        draw_text("CAN I GET WEB TO WORK!?", 20.0, 300.0, 30.0, DARKGRAY);
+        draw_text("CAN I GET WEB TO WORK!??", 20.0, 300.0, 30.0, DARKGRAY);
 
         next_frame().await
     }
