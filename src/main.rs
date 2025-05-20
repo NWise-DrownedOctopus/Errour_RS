@@ -9,7 +9,7 @@ mod errour_ui;
 
 #[macroquad::main("main_menu")]
 async fn main() {
-    window_conf();
+    utils::check_screen_size();
     let window_style = root_ui()
         .style_builder()
         .background_margin(RectOffset::new(32.0, 76.0, 44.0, 20.0))
@@ -17,7 +17,12 @@ async fn main() {
         .build();
 
     utils::scale_screen();
-    loop {
+    
+    loop {        
+        if utils::check_screen_size() == false {
+            next_frame().await;
+            continue;        
+        }        
         clear_background(RED);
 
         draw_ui(); 

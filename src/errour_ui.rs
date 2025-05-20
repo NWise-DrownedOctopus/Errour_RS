@@ -15,5 +15,4 @@ pub fn draw_ui() {
                 .position(vec2(65.0, 195.0))
                 .ui(ui);
         });
-
 }
