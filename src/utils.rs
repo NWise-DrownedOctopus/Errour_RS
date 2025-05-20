@@ -4,15 +4,6 @@ const VIRTUAL_HEIGHT: i32 = 1080;
 
 use macroquad::window::{request_new_screen_size};
 
-pub fn window_conf() -> Conf {
-    Conf {
-        window_title: "Errour".to_string(),
-        window_width: VIRTUAL_WIDTH,
-        window_height: VIRTUAL_HEIGHT,
-        ..Default::default()
-    }
-}
-
 pub fn scale_screen() {
     // Here we need to determine if our virtual screen size fits on the current screen, and how to scale it it
     // First lets check if the virtual screen is too large
@@ -20,8 +11,8 @@ pub fn scale_screen() {
 }
    
 pub fn check_screen_size() -> bool {
-    let mut correct_height: bool = false;
-    let mut correct_width: bool = false;
+    let correct_height: bool;
+    let correct_width: bool;
     if (VIRTUAL_HEIGHT as f32) > screen_height() {
         println!("virtual too tall");
         correct_height = false;
