@@ -71,16 +71,15 @@ pub fn draw_settings(ui_skin: &Skin,  ui_state: &mut UIState) {
 pub fn draw_game_ui(ui_skin: &Skin) {
     root_ui().push_skin(ui_skin);
     // Left Bar
-    root_ui().window(hash!(), vec2(0., 50.), vec2(640., 1080.), |ui| {});
-    root_ui().window(hash!(), vec2(640., 50.), vec2(50., 1080.), |ui| {});
+    root_ui().window(hash!(), vec2(0., 50.), vec2(610., 1030.), |ui| {});
+    root_ui().window(hash!(), vec2(610., 50.), vec2(50., 1030.), |ui| {});
 
     // Right Bar
-    root_ui().window(hash!(), vec2(1720., 50.), vec2(200., 1080.), |ui| {});    
+    root_ui().window(hash!(), vec2(1710., 50.), vec2(210., 1000.), |ui| {});    
 
     // Top Bar
     root_ui().window(hash!(), vec2(0., 0.), vec2(1920., 50.), |ui| {});
 
-    // Game
-    root_ui().window(hash!(), vec2(690., 50.), vec2(1030., 1030.), |ui| {});
-
+    // Bottom Bar
+    root_ui().window(hash!(), vec2(660., 1050.), vec2(1920., 30.), |ui| {});
 }
