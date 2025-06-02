@@ -3,8 +3,16 @@ const VIRTUAL_WIDTH: i32 = 1920;
 const VIRTUAL_HEIGHT: i32 = 1080;
 
 use macroquad::window::{request_new_screen_size};
+use crate::game_manager::AppState;
+use crate::game_manager::GameState;
+use macroquad::ui::{Skin};
 
-
+pub struct GameContext {
+    pub window_skin: Skin,
+    pub debug_mode: bool,
+    pub app_state: AppState,
+    pub game_state: GameState,
+}
 
 pub fn scale_screen() {
     // Here we need to determine if our virtual screen size fits on the current screen, and how to scale it it

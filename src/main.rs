@@ -1,23 +1,29 @@
-use macroquad::prelude::*;
-use errour_ui::{draw_main_menu, draw_game_ui, draw_settings, init_ui_skin};
-use utils::{configure_camera, draw_grid_test};
-use errour_ui::UIState;
-
 mod utils;
 mod errour_ui;
+mod game_manager;
+
+use macroquad::prelude::*;
+use errour_ui::{init_ui_skin};
+use utils::{configure_camera, draw_grid_test};
+use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
+use crate::game_manager::AppState;
+use crate::game_manager::GameState;
+use utils::GameContext;
 
 #[macroquad::main("main_menu")]
 async fn main() {
     utils::check_screen_size();    
-    utils::scale_screen();
+    utils::scale_screen();    
 
-    let window_skin = init_ui_skin().clone();
-    let mut ui_state = UIState::MainMenu;
+    let mut context = GameContext {
+        window_skin: init_ui_skin().clone(),
+        debug_mode: false,
+        app_state: AppState::MainMenu,
+        game_state: GameState::None,
+    };
 
     let camera: Camera2D = configure_camera();
     set_camera(&camera);
-
-    let mut debug_mode: bool = false;
     
     loop {    
         // Here I need to figure out how to render to the web
@@ -30,27 +36,35 @@ async fn main() {
         */       
 
         if is_key_pressed(KeyCode::G) {
-            debug_mode = !debug_mode;
+            context.debug_mode = !context.debug_mode;
         }  
 
         // We clear the background and set it to a default state of black
         clear_background(BLACK);
 
-        // We call the appropriate draw function based on the current state of the UI
-        match ui_state {
-            UIState::MainMenu => draw_main_menu(&window_skin, &mut ui_state),
-            UIState::Settings => draw_settings(&window_skin, &mut ui_state),
-            UIState::GameUI => draw_game_ui(&window_skin),
-        };
-
         // We draw game objects to the screen
-        if debug_mode {
+
+        if context.debug_mode {
             draw_grid_test(50.0, 21);
             draw_rectangle(0.0, 0.0, 50.0, 50.0, GREEN);
-        }        
+        }      
+
+        handle_app_state(&mut context);  
 
         // We wait until the next frame before we continue our game loop, ensuring our code only runs
         // once per frame
         next_frame().await
+    }
+}
+
+pub fn handle_app_state(context: &mut GameContext) {
+
+    match context.app_state {
+        AppState::MainMenu => update_main_menu(context),
+        AppState::CampaignHub => update_campaign_hub(context),
+        AppState::LoadoutSelection => update_loadout_menu(context),
+        AppState::InGame => update_gameplay(context),
+        AppState::PostMission => update_post_mission_screen(context),
+        AppState::Settings => update_settings(context),
     }
 }
