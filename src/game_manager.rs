@@ -1,5 +1,7 @@
-use crate::utils::GameContext;
+use macroquad::prelude::*;
+use crate::utils::{update_camera_pos, GameContext};
 use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent, MainMenuUIEvent, SettingsUIEvent, draw_post_mission_screen, draw_loadout_menu, draw_campaign_hub};
+use crate::utils::{draw_grid_test};
 
 pub enum AppState {
     MainMenu,
@@ -40,12 +42,61 @@ pub fn update_loadout_menu(context: &mut GameContext) {
 }
 
 pub fn update_gameplay(context: &mut GameContext) {
+    // Here we handle input for changes
+    if is_key_pressed(KeyCode::G) {
+        context.debug_mode = !context.debug_mode;
+    }
+
+    if is_key_down(KeyCode::W) {
+        update_camera_pos(context, 0., context.game_camera_move_speed);
+    }
+
+    if is_key_down(KeyCode::S) {
+        update_camera_pos(context, 0., -context.game_camera_move_speed);
+    }
+
+    if is_key_down(KeyCode::D) {
+        update_camera_pos(context, context.game_camera_move_speed, 0.);
+    }
+
+    if is_key_down(KeyCode::A) {
+        update_camera_pos(context, -context.game_camera_move_speed, 0.);
+    }  
+
+    // Update Camera
+    set_camera(&context.game_camera);
+
+    // We clear the background and set it to a default state of White
+    clear_background(WHITE);       
+
+    draw_circle(525.0, 500.0, 25.0, GREEN);
+
+    if context.debug_mode {
+        draw_grid_test(50.0, 21);
+        draw_rectangle(0.0, 0.0, 50.0, 50.0, GREEN);
+    }
+
+    // Here we draw the game to a render texture, then draw that texture to the screen
+    let rt = &context.game_camera.render_target.as_ref().unwrap().texture;
+    set_default_camera();    
+    draw_texture_ex(
+        rt,
+        660.0,
+        50.0,
+        WHITE,
+        DrawTextureParams {
+        dest_size: Some(vec2(1050.0, 1000.0)), // match render target size
+        ..Default::default()
+    },
+    );    
+
+    // Here we render the game ui    
     let event = draw_game_ui(context);
 
     match event {
         GameUIEvent::PauseClicked => context.game_state = GameState::Paused,
         GameUIEvent::None => {} // Do Nothing
-    }
+    }    
 }
 
 pub fn update_post_mission_screen(context: &mut GameContext) {

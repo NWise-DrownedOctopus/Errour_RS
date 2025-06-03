@@ -4,7 +4,6 @@ mod game_manager;
 
 use macroquad::prelude::*;
 use errour_ui::{init_ui_skin};
-use utils::{configure_camera, draw_grid_test};
 use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
@@ -15,15 +14,24 @@ async fn main() {
     utils::check_screen_size();    
     utils::scale_screen();    
 
+    let rt_size = vec2(1050.0, 1000.0);
+    let camera_view_rt = render_target(1050, 1000);
+    camera_view_rt.texture.set_filter(FilterMode::Nearest);
+
     let mut context = GameContext {
         window_skin: init_ui_skin().clone(),
         debug_mode: false,
         app_state: AppState::MainMenu,
         game_state: GameState::None,
+        game_camera: Camera2D {
+            offset: vec2(0.0, 0.0),
+            target: vec2(rt_size.x / 2.0, rt_size.y / 2.0),
+            render_target: Some(camera_view_rt),
+            zoom: vec2(2.0 / rt_size.x, -2.0 / rt_size.y),
+            ..Default::default()
+        },
+        game_camera_move_speed: 5.0,
     };
-
-    let camera: Camera2D = configure_camera();
-    set_camera(&camera);
     
     loop {    
         // Here I need to figure out how to render to the web
@@ -33,22 +41,8 @@ async fn main() {
             next_frame().await;
             continue;        
         }      
-        */       
-
-        if is_key_pressed(KeyCode::G) {
-            context.debug_mode = !context.debug_mode;
-        }  
-
-        // We clear the background and set it to a default state of black
-        clear_background(BLACK);
-
-        // We draw game objects to the screen
-
-        if context.debug_mode {
-            draw_grid_test(50.0, 21);
-            draw_rectangle(0.0, 0.0, 50.0, 50.0, GREEN);
-        }      
-
+        */
+        
         handle_app_state(&mut context);  
 
         // We wait until the next frame before we continue our game loop, ensuring our code only runs

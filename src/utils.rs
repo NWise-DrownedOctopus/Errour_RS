@@ -12,6 +12,8 @@ pub struct GameContext {
     pub debug_mode: bool,
     pub app_state: AppState,
     pub game_state: GameState,
+    pub game_camera: Camera2D,
+    pub game_camera_move_speed: f32,
 }
 
 pub fn scale_screen() {
@@ -61,13 +63,9 @@ pub fn check_screen_size() -> bool {
 
 }
 
-pub fn configure_camera() -> Camera2D {
-    Camera2D {
-            offset: vec2(0.0, 0.0),
-            target: vec2(300.0, 510.0),
-            zoom: vec2(2.0 / 1920.0, -2.0 / 1080.0),
-            ..Default::default()
-        }
+pub fn update_camera_pos(context: &mut GameContext, x_pos_change: f32, y_pos_change: f32) {
+    context.game_camera.target = context.game_camera.target + vec2(x_pos_change, y_pos_change)
+
 }
 
 pub fn draw_grid_test(spacing: f32, range: i32) {
