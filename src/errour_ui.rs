@@ -25,10 +25,19 @@ pub enum GameUIEvent {
 pub fn init_ui_skin() -> Skin{
     let skin1 = {
         let button_style = root_ui().style_builder()
-            .background_margin(RectOffset::new(37.0, 37.0, 5.0, 5.0))
-            .margin(RectOffset::new(10.0, 10.0, 0.0, 0.0))
+            .background_margin(RectOffset::new(5.0, 5.0, 5.0, 5.0))
+            .background(
+                Image::from_file_with_format(
+                    include_bytes!("../art/ui/window_background_1.png"),
+                    None,
+                )
+                .unwrap(),
+            )
+            .margin(RectOffset::new(0.0, 0.0, 0.0, 0.0))
+            .color_selected(Color::from_rgba(255, 255, 255, 255))
+            .color_inactive(Color::from_rgba(255, 255, 255, 255))
             .text_color(Color::from_rgba(180, 180, 100, 255))
-            .font_size(40)
+            .font_size(20)
             .build();
 
         let window_style = root_ui()
@@ -42,6 +51,8 @@ pub fn init_ui_skin() -> Skin{
             )
             .background_margin(RectOffset::new(20.0, 20.0, 20.0, 20.0))
             .margin(RectOffset::new(-20.0, -30.0, 0.0, 0.0))
+            .color_selected(Color::from_rgba(255, 255, 255, 255))
+            .color_inactive(Color::from_rgba(255, 255, 255, 255))
             .build();
 
         Skin {
@@ -139,7 +150,7 @@ pub fn draw_game_ui(context: &mut GameContext) -> GameUIEvent {
     // Top Bar
     root_ui().window(hash!(), vec2(0., 0.), vec2(1920., 50.), |ui| {
         if widgets::Button::new("Pause")
-            .position(vec2(50.0, 0.0))
+            .position(vec2(50.0, -10.0))
             .ui(ui)
         {
             event = GameUIEvent::PauseClicked;

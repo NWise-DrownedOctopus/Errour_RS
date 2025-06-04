@@ -6,6 +6,7 @@ use macroquad::window::{request_new_screen_size};
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use macroquad::ui::{Skin};
+use crate::vindex::Creature;
 
 pub struct GameContext {
     pub window_skin: Skin,
@@ -14,6 +15,7 @@ pub struct GameContext {
     pub game_state: GameState,
     pub game_camera: Camera2D,
     pub game_camera_move_speed: f32,
+    pub creatures: Vec<Creature>,
 }
 
 pub fn scale_screen() {

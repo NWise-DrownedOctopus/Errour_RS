@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 use crate::utils::{update_camera_pos, GameContext};
 use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent, MainMenuUIEvent, SettingsUIEvent, draw_post_mission_screen, draw_loadout_menu, draw_campaign_hub};
 use crate::utils::{draw_grid_test};
+use crate::vindex::{move_towards, draw_creature};
 
 pub enum AppState {
     MainMenu,
@@ -42,6 +43,7 @@ pub fn update_loadout_menu(context: &mut GameContext) {
 }
 
 pub fn update_gameplay(context: &mut GameContext) {
+    //////////////////////////////////////////////////////////////// UPDATE INPUT
     // Here we handle input for changes
     if is_key_pressed(KeyCode::G) {
         context.debug_mode = !context.debug_mode;
@@ -62,14 +64,26 @@ pub fn update_gameplay(context: &mut GameContext) {
     if is_key_down(KeyCode::A) {
         update_camera_pos(context, -context.game_camera_move_speed, 0.);
     }  
+    //////////////////////////////////////////////////////////////// UPDATE LOGIC
+    
+    // Move each asteroid
+    let dt = get_frame_time();
+    for creature in context.creatures.iter_mut() {
+        creature.pos = move_towards(creature, &dt); 
+    }
 
+    //////////////////////////////////////////////////////////////// DRAW
     // Update Camera
     set_camera(&context.game_camera);
 
     // We clear the background and set it to a default state of White
-    clear_background(WHITE);       
+    clear_background(BLACK);       
 
     draw_circle(525.0, 500.0, 25.0, GREEN);
+
+    for creature in context.creatures.iter_mut() {
+        draw_creature(creature);
+    }
 
     if context.debug_mode {
         draw_grid_test(50.0, 21);
@@ -90,7 +104,7 @@ pub fn update_gameplay(context: &mut GameContext) {
     },
     );    
 
-    // Here we render the game ui    
+    //////////////////////////////////////////////////////////////// UPDATE UI  
     let event = draw_game_ui(context);
 
     match event {

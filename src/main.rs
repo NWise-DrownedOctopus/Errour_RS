@@ -1,6 +1,7 @@
 mod utils;
 mod errour_ui;
 mod game_manager;
+mod vindex;
 
 use macroquad::prelude::*;
 use errour_ui::{init_ui_skin};
@@ -8,6 +9,7 @@ use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, u
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use utils::GameContext;
+use vindex::Creature;
 
 #[macroquad::main("main_menu")]
 async fn main() {
@@ -31,7 +33,20 @@ async fn main() {
             ..Default::default()
         },
         game_camera_move_speed: 5.0,
+        creatures: Vec::new(),
     };
+
+    for _ in 0..10 {
+        context.creatures.push(Creature {
+            pos: Vec2::new(rand::gen_range(-1., 1.), rand::gen_range(-1., 1.)).normalize()* screen_width().min(screen_height())/ 2.,
+            speed: 0.5,
+            rot: 0.,
+            rot_speed: rand::gen_range(-2., 2.),
+            size: screen_width().min(screen_height()) / 10.,
+            target: vec2(525.0, 500.0),
+            collided: false,
+        })
+    }
     
     loop {    
         // Here I need to figure out how to render to the web
@@ -42,7 +57,7 @@ async fn main() {
             continue;        
         }      
         */
-        
+
         handle_app_state(&mut context);  
 
         // We wait until the next frame before we continue our game loop, ensuring our code only runs
