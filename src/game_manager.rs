@@ -2,7 +2,7 @@ use macroquad::prelude::*;
 use crate::utils::{update_camera_pos, GameContext};
 use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent, MainMenuUIEvent, SettingsUIEvent, draw_post_mission_screen, draw_loadout_menu, draw_campaign_hub};
 use crate::utils::{draw_grid_test};
-use crate::vindex::{move_towards, draw_creature};
+use crate::vindex::{draw_creature};
 
 pub enum AppState {
     MainMenu,
@@ -66,18 +66,17 @@ pub fn update_gameplay(context: &mut GameContext) {
     }  
     //////////////////////////////////////////////////////////////// UPDATE LOGIC
     
-    // Move each asteroid
-    let dt = get_frame_time();
+    // Move each enemy to thier targets
     for creature in context.creatures.iter_mut() {
-        creature.pos = move_towards(creature, &dt); 
+        creature.pos = creature.pos.move_towards(creature.target, creature.speed);
     }
 
     //////////////////////////////////////////////////////////////// DRAW
     // Update Camera
     set_camera(&context.game_camera);
 
-    // We clear the background and set it to a default state of White
-    clear_background(BLACK);       
+    // We clear the background and set it to a default state
+    clear_background(BEIGE);       
 
     draw_circle(525.0, 500.0, 25.0, GREEN);
 

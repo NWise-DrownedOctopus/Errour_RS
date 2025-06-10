@@ -8,14 +8,14 @@ use crate::game_manager::GameState;
 use macroquad::ui::{Skin};
 use crate::vindex::Creature;
 
-pub struct GameContext {
+pub struct GameContext<'a> {
     pub window_skin: Skin,
     pub debug_mode: bool,
     pub app_state: AppState,
     pub game_state: GameState,
     pub game_camera: Camera2D,
     pub game_camera_move_speed: f32,
-    pub creatures: Vec<Creature>,
+    pub creatures: Vec<Creature<'a>>,
 }
 
 pub fn scale_screen() {

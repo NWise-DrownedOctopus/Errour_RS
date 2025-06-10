@@ -2,6 +2,9 @@ mod utils;
 mod errour_ui;
 mod game_manager;
 mod vindex;
+mod animation;
+mod animations;
+mod assets;
 
 use macroquad::prelude::*;
 use errour_ui::{init_ui_skin};
@@ -10,6 +13,9 @@ use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use utils::GameContext;
 use vindex::Creature;
+use animation::Animator;
+use animations::{enemy1_idel_animation};
+use crate::assets::GameArtAssets;
 
 #[macroquad::main("main_menu")]
 async fn main() {
@@ -19,6 +25,8 @@ async fn main() {
     let rt_size = vec2(1050.0, 1000.0);
     let camera_view_rt = render_target(1050, 1000);
     camera_view_rt.texture.set_filter(FilterMode::Nearest);
+
+    let art_assets = GameArtAssets::load().await;
 
     let mut context = GameContext {
         window_skin: init_ui_skin().clone(),
@@ -45,6 +53,13 @@ async fn main() {
             size: screen_width().min(screen_height()) / 10.,
             target: vec2(525.0, 500.0),
             collided: false,
+            animator: Animator {
+                texture: &art_assets.enemy_texture,
+                animation: enemy1_idel_animation(),
+                frame_width: 48.0,
+                frame_height: 48.0,
+                columns: 3,
+            }
         })
     }
     
