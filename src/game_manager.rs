@@ -25,7 +25,10 @@ pub fn update_main_menu(context: &mut GameContext) {
     let event = draw_main_menu(context);
     
     match event {
-        MainMenuUIEvent::PlayClicked => context.app_state = AppState::InGame,
+        MainMenuUIEvent::PlayClicked => {
+            context.app_state = AppState::InGame;
+            context.game_state = GameState::Paused;
+        }
         MainMenuUIEvent::SettingsClicked => context.app_state = AppState::Settings,
         MainMenuUIEvent::QuitClicked => {
             // Quit the game
@@ -49,27 +52,34 @@ pub fn update_gameplay(context: &mut GameContext) {
         context.debug_mode = !context.debug_mode;
     }
 
-    if is_key_down(KeyCode::W) {
+    if matches!(context.game_state, GameState::Playing) {
+        if is_key_down(KeyCode::W) {
         update_camera_pos(context, 0., context.game_camera_move_speed);
+        }
+
+        if is_key_down(KeyCode::S) {
+            update_camera_pos(context, 0., -context.game_camera_move_speed);
+        }
+
+        if is_key_down(KeyCode::D) {
+            update_camera_pos(context, context.game_camera_move_speed, 0.);
+        }
+
+        if is_key_down(KeyCode::A) {
+            update_camera_pos(context, -context.game_camera_move_speed, 0.);
+        }
     }
 
-    if is_key_down(KeyCode::S) {
-        update_camera_pos(context, 0., -context.game_camera_move_speed);
-    }
-
-    if is_key_down(KeyCode::D) {
-        update_camera_pos(context, context.game_camera_move_speed, 0.);
-    }
-
-    if is_key_down(KeyCode::A) {
-        update_camera_pos(context, -context.game_camera_move_speed, 0.);
-    }  
+      
     //////////////////////////////////////////////////////////////// UPDATE LOGIC
     
     // Move each enemy to thier targets
-    for creature in context.creatures.iter_mut() {
+    if matches!(context.game_state, GameState::Playing) {
+        for creature in context.creatures.iter_mut() {
         creature.pos = creature.pos.move_towards(creature.target, creature.speed);
+        }
     }
+    
 
     //////////////////////////////////////////////////////////////// DRAW
     // Update Camera
@@ -107,7 +117,14 @@ pub fn update_gameplay(context: &mut GameContext) {
     let event = draw_game_ui(context);
 
     match event {
-        GameUIEvent::PauseClicked => context.game_state = GameState::Paused,
+        GameUIEvent::PauseClicked => {
+            if matches!(context.game_state, GameState::Playing) {
+                context.game_state = GameState::Paused
+            }
+            else if matches!(context.game_state, GameState::Paused) {
+                context.game_state = GameState::Playing
+            }            
+        }
         GameUIEvent::None => {} // Do Nothing
     }    
 }
