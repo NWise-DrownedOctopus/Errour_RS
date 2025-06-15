@@ -14,6 +14,7 @@ pub struct Animator<'a> {
     pub frame_height: f32,
     pub columns: usize,
     pub animation: Animation,
+    pub shadow_offset: f32,
 }
 
 impl<'a> Animator<'a> {
@@ -33,12 +34,28 @@ impl<'a> Animator<'a> {
         let x = (frame_index % self.columns) as f32 * self.frame_width;
         let y = (frame_index / self.columns) as f32 * self.frame_height;
         let source = Rect::new(x,y, self.frame_width, self.frame_height);
+        let shadow_color = Color::new(0.0, 0.0, 0.0, 0.1);
 
+        // First We draw the shadow for the creature flying
         draw_texture_ex(
             // added & here to borrow, but not sure why I needed to borrow
             &self.texture,
-            position.x,
-            position.y,
+            position.x - (self.frame_height/2.0) - self.shadow_offset,
+            position.y - (self.frame_width/2.0) - self.shadow_offset,
+            shadow_color,
+            DrawTextureParams {
+                source: Some(source),
+                flip_y: true,
+                ..Default::default()
+            },
+        );
+
+        // After Shadow draw creature sprite on top
+        draw_texture_ex(
+            // added & here to borrow, but not sure why I needed to borrow
+            &self.texture,
+            position.x - (self.frame_height/2.0),
+            position.y - (self.frame_width/2.0),
             WHITE,
             DrawTextureParams {
                 source: Some(source),
@@ -46,5 +63,6 @@ impl<'a> Animator<'a> {
                 ..Default::default()
             },
         );
+        
     }
 }

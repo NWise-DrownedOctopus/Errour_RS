@@ -5,17 +5,21 @@ mod vindex;
 mod animation;
 mod animations;
 mod assets;
+mod collision;
+mod base;
 
 use macroquad::prelude::*;
 use errour_ui::{init_ui_skin};
 use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
+use crate::collision::CircleCollider;
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use utils::GameContext;
 use vindex::Creature;
 use animation::Animator;
-use animations::{enemy1_idel_animation};
+use animations::{enemy1_idel_animation, player_base_idel_animation};
 use crate::assets::GameArtAssets;
+use base::PlayerBase;
 
 #[macroquad::main("main_menu")]
 async fn main() {
@@ -27,6 +31,29 @@ async fn main() {
     camera_view_rt.texture.set_filter(FilterMode::Nearest);
 
     let art_assets = GameArtAssets::load().await;
+
+    let player_base = PlayerBase {
+        pos: vec2(525.0, 500.0),
+        fire_speed: 3.0,
+        rot: 0.0,
+        rot_speed: 3.0,
+        size: 30.0,
+        target: None,
+        collider: CircleCollider {
+            center: vec2(525.0, 500.0),
+            radius: 25.0,
+        },
+        collided: false,
+        animator: Animator {
+            texture: &art_assets.player_base_texture,
+            frame_width: 48.0,
+            frame_height: 48.0,
+            columns: 4,
+            animation: player_base_idel_animation(),
+            shadow_offset: 3.0,
+        },
+        health: 100.0,
+    };
 
     let mut context = GameContext {
         window_skin: init_ui_skin().clone(),
@@ -42,11 +69,16 @@ async fn main() {
         },
         game_camera_move_speed: 5.0,
         creatures: Vec::new(),
+        player_base,
     };
 
+    // Here we are spawning in 10 creatures at random locations
     for _ in 0..10 {
+        let pos = Vec2::new(rand::gen_range(-1., 1.), rand::gen_range(-1., 1.))
+        .normalize() * screen_width().min(screen_height()) / 2.;
+
         context.creatures.push(Creature {
-            pos: Vec2::new(rand::gen_range(-1., 1.), rand::gen_range(-1., 1.)).normalize()* screen_width().min(screen_height())/ 2.,
+            pos,
             speed: 0.5,
             rot: 0.,
             rot_speed: rand::gen_range(-2., 2.),
@@ -59,7 +91,13 @@ async fn main() {
                 frame_width: 48.0,
                 frame_height: 48.0,
                 columns: 3,
-            }
+                shadow_offset: 25.0,
+            },
+            collider: CircleCollider {
+                center: Vec2::new(pos.x, pos.y),
+                radius: 12.0,
+            },
+            damage: 10.0,
         })
     }
     

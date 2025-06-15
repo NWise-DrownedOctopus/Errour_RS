@@ -1,8 +1,10 @@
 use macroquad::prelude::*;
+use crate::collision::Collider;
 use crate::utils::{update_camera_pos, GameContext};
 use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent, MainMenuUIEvent, SettingsUIEvent, draw_post_mission_screen, draw_loadout_menu, draw_campaign_hub};
 use crate::utils::{draw_grid_test};
 use crate::vindex::{draw_creature};
+use crate::base::{draw_base};
 
 pub enum AppState {
     MainMenu,
@@ -52,6 +54,11 @@ pub fn update_gameplay(context: &mut GameContext) {
         context.debug_mode = !context.debug_mode;
     }
 
+    if is_key_pressed(KeyCode::Space) {
+        if matches!(context.game_state, GameState::Playing) {context.game_state = GameState::Paused;}        
+        else if matches!(context.game_state, GameState::Paused) {context.game_state = GameState::Playing;}
+    }
+
     if matches!(context.game_state, GameState::Playing) {
         if is_key_down(KeyCode::W) {
         update_camera_pos(context, 0., context.game_camera_move_speed);
@@ -76,9 +83,21 @@ pub fn update_gameplay(context: &mut GameContext) {
     // Move each enemy to thier targets
     if matches!(context.game_state, GameState::Playing) {
         for creature in context.creatures.iter_mut() {
-        creature.pos = creature.pos.move_towards(creature.target, creature.speed);
+            // Move Each Creature
+            creature.pos = creature.pos.move_towards(creature.target, creature.speed);
+
+            // Check for Collsions with target
+            // For now it is assumed this is the base
+            // For now this is every frame
+            if creature.collider.intersects(&context.player_base.collider) {
+                context.player_base.health -= creature.damage;
+                creature.collided = true;
+            }
         }
     }
+
+    // For each creatrure that collded with the base, remove them from vec
+    context.creatures.retain(|creature| !creature.collided);
     
 
     //////////////////////////////////////////////////////////////// DRAW
@@ -88,7 +107,8 @@ pub fn update_gameplay(context: &mut GameContext) {
     // We clear the background and set it to a default state
     clear_background(BEIGE);       
 
-    draw_circle(525.0, 500.0, 25.0, GREEN);
+    // draw_circle(525.0, 500.0, 25.0, GREEN);
+    draw_base(&mut context.player_base);
 
     for creature in context.creatures.iter_mut() {
         draw_creature(creature);
@@ -97,6 +117,11 @@ pub fn update_gameplay(context: &mut GameContext) {
     if context.debug_mode {
         draw_grid_test(50.0, 21);
         draw_rectangle(0.0, 0.0, 50.0, 50.0, GREEN);
+        // For each creature, we want to draw their collider here
+        for creature in context.creatures.iter_mut() {
+            creature.collider.debug_draw();
+        }
+        context.player_base.collider.debug_draw();
     }
 
     // Here we draw the game to a render texture, then draw that texture to the screen

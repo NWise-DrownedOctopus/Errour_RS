@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 
 use crate::animation::Animator;
+use crate::collision::CircleCollider;
 
 pub struct Creature<'a> {
     pub pos: Vec2,
@@ -11,10 +12,12 @@ pub struct Creature<'a> {
     pub target: Vec2,
     pub collided: bool,
     pub animator: Animator<'a>,
+    pub collider: CircleCollider,
+    pub damage: f32,
 }
 
 pub fn draw_creature(creature: &mut Creature) {
-    // draw_circle(creature.pos.x, creature.pos.y, 10.0, PINK);
     creature.animator.update();
+    creature.collider.center = Vec2::new(creature.pos.x, creature.pos.y);
     creature.animator.draw(creature.pos);
 }

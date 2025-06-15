@@ -3,6 +3,7 @@ const VIRTUAL_WIDTH: i32 = 1920;
 const VIRTUAL_HEIGHT: i32 = 1080;
 
 use macroquad::window::{request_new_screen_size};
+use crate::base::PlayerBase;
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use macroquad::ui::{Skin};
@@ -16,6 +17,7 @@ pub struct GameContext<'a> {
     pub game_camera: Camera2D,
     pub game_camera_move_speed: f32,
     pub creatures: Vec<Creature<'a>>,
+    pub player_base: PlayerBase<'a>,
 }
 
 pub fn scale_screen() {

@@ -150,11 +150,13 @@ pub fn draw_game_ui(context: &mut GameContext) -> GameUIEvent {
     // Top Bar
     root_ui().window(hash!(), vec2(0., 0.), vec2(1920., 50.), |ui| {
         if widgets::Button::new("Pause")
-            .position(vec2(50.0, -10.0))
+            .position(vec2(1000.0, -10.0))
             .ui(ui)
         {
             event = GameUIEvent::PauseClicked;
         }
+
+        ui.label(None, &format!("Current Health = {}", context.player_base.health));
     });
 
     // Bottom Bar
