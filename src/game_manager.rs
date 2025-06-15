@@ -91,13 +91,13 @@ pub fn update_gameplay(context: &mut GameContext) {
             // For now this is every frame
             if creature.collider.intersects(&context.player_base.collider) {
                 context.player_base.health -= creature.damage;
-                creature.collided = true;
+                creature.dead = true;
             }
         }
     }
 
     // For each creatrure that collded with the base, remove them from vec
-    context.creatures.retain(|creature| !creature.collided);
+    context.creatures.retain(|creature| !creature.dead);
     
 
     //////////////////////////////////////////////////////////////// DRAW

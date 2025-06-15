@@ -98,6 +98,8 @@ async fn main() {
                 radius: 12.0,
             },
             damage: 10.0,
+            health: 10.0,
+            dead: false,
         })
     }
     

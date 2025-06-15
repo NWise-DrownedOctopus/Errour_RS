@@ -14,6 +14,8 @@ pub struct Creature<'a> {
     pub animator: Animator<'a>,
     pub collider: CircleCollider,
     pub damage: f32,
+    pub health: f32,
+    pub dead: bool,
 }
 
 pub fn draw_creature(creature: &mut Creature) {
