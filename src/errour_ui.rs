@@ -156,7 +156,8 @@ pub fn draw_game_ui(context: &mut GameContext) -> GameUIEvent {
             event = GameUIEvent::PauseClicked;
         }
 
-        ui.label(None, &format!("Current Health = {}", context.player_base.health));
+        // Refactor
+        // ui.label(None, &format!("Current Health = {}", context.player_base.health));
     });
 
     // Bottom Bar

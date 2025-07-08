@@ -3,11 +3,15 @@ const VIRTUAL_WIDTH: i32 = 1920;
 const VIRTUAL_HEIGHT: i32 = 1080;
 
 use macroquad::window::{request_new_screen_size};
-use crate::base::PlayerBase;
+use crate::components::common::{Position, Velocity, Rotation, RotationalVelocity, Size, Target, Collided, Health, Damage, Dead};
+use crate::components::creature::{CreatureAnimator, CreatureCollider};
+// Needs Refactor
+// use crate::base::PlayerBase;
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use macroquad::ui::{Skin};
-use crate::vindex::Creature;
+// Needs Refactor
+// use crate::vindex::Creature;
 
 pub struct GameContext<'a> {
     pub window_skin: Skin,
@@ -16,8 +20,23 @@ pub struct GameContext<'a> {
     pub game_state: GameState,
     pub game_camera: Camera2D,
     pub game_camera_move_speed: f32,
-    pub creatures: Vec<Creature<'a>>,
-    pub player_base: PlayerBase<'a>,
+
+    // Componenet Storage
+    pub positions: Vec<Position>,
+    pub velocities: Vec<Velocity>,
+    pub rotations: Vec<Rotation>,
+    pub rotational_velocities: Vec<RotationalVelocity>,
+    pub sizes: Vec<Size>,
+    pub targets: Vec<Target>,
+    pub collided_flags: Vec<Collided>,
+    pub healths: Vec<Health>,
+    pub damages: Vec<Damage>,
+    pub dead_flags: Vec<Dead>,
+    pub colliders: Vec<CreatureCollider>,
+    pub animators: Vec<CreatureAnimator<'a>>,
+
+    // Group of specific entity types
+    pub creature_ids: Vec<usize>,
 }
 
 pub fn scale_screen() {

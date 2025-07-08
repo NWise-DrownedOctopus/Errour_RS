@@ -1,25 +1,29 @@
+// Refactor Approved
+mod managers;
+mod components;
+mod systems;
+mod assets;
+
+use crate::components::collider::CircleCollider;
+use crate::components::animation::Animator;
+
+use crate::assets::animations::{enemy1_idel_animation, player_base_idel_animation};
+// May Need Refactoring
 mod utils;
 mod errour_ui;
 mod game_manager;
-mod vindex;
-mod animation;
-mod animations;
-mod assets;
-mod collision;
-mod base;
 
 use macroquad::prelude::*;
+
 use errour_ui::{init_ui_skin};
 use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
-use crate::collision::CircleCollider;
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use utils::GameContext;
-use vindex::Creature;
-use animation::Animator;
-use animations::{enemy1_idel_animation, player_base_idel_animation};
-use crate::assets::GameArtAssets;
-use base::PlayerBase;
+
+use crate::assets::art_assets::GameArtAssets;
+use crate::components::base::PlayerBase;
+
 
 #[macroquad::main("main_menu")]
 async fn main() {
@@ -38,8 +42,8 @@ async fn main() {
         rot: 0.0,
         rot_speed: 3.0,
         size: 30.0,
-        target: None,
-        collider: CircleCollider {
+        // target: None,
+        base_collider: CircleCollider {
             center: vec2(525.0, 500.0),
             radius: 25.0,
         },
@@ -53,8 +57,12 @@ async fn main() {
             shadow_offset: 3.0,
         },
         health: 100.0,
+        fire_range_collider: CircleCollider {
+            center: vec2(525.0, 500.0),
+            radius: 00.0,
+        },
     };
-
+    
     let mut context = GameContext {
         window_skin: init_ui_skin().clone(),
         debug_mode: false,
@@ -68,11 +76,12 @@ async fn main() {
             ..Default::default()
         },
         game_camera_move_speed: 5.0,
-        creatures: Vec::new(),
-        player_base,
+        // creatures: Vec::new(),
+        // player_base,
     };
 
     // Here we are spawning in 10 creatures at random locations
+    /* NEEDS REFACTOR
     for _ in 0..10 {
         let pos = Vec2::new(rand::gen_range(-1., 1.), rand::gen_range(-1., 1.))
         .normalize() * screen_width().min(screen_height()) / 2.;
@@ -102,6 +111,8 @@ async fn main() {
             dead: false,
         })
     }
+
+    */
     
     loop {    
         // Here I need to figure out how to render to the web

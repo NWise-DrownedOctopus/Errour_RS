@@ -1,10 +1,10 @@
 use macroquad::prelude::*;
-use crate::collision::Collider;
+// use crate::collision::Collider;
 use crate::utils::{update_camera_pos, GameContext};
 use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent, MainMenuUIEvent, SettingsUIEvent, draw_post_mission_screen, draw_loadout_menu, draw_campaign_hub};
 use crate::utils::{draw_grid_test};
-use crate::vindex::{draw_creature};
-use crate::base::{draw_base};
+// use crate::vindex::{draw_creature};
+// use crate::base::{draw_base, update_player_base_target};
 
 pub enum AppState {
     MainMenu,
@@ -81,6 +81,7 @@ pub fn update_gameplay(context: &mut GameContext) {
     //////////////////////////////////////////////////////////////// UPDATE LOGIC
     
     // Move each enemy to thier targets
+    /* 
     if matches!(context.game_state, GameState::Playing) {
         for creature in context.creatures.iter_mut() {
             // Move Each Creature
@@ -89,15 +90,20 @@ pub fn update_gameplay(context: &mut GameContext) {
             // Check for Collsions with target
             // For now it is assumed this is the base
             // For now this is every frame
-            if creature.collider.intersects(&context.player_base.collider) {
+            if creature.collider.intersects(&context.player_base.base_collider) {
                 context.player_base.health -= creature.damage;
                 creature.dead = true;
             }
         }
     }
 
+    */
+
+    // Here we update our player base targeting
+    // update_player_base_target(context);
+
     // For each creatrure that collded with the base, remove them from vec
-    context.creatures.retain(|creature| !creature.dead);
+    // context.creatures.retain(|creature| !creature.dead);
     
 
     //////////////////////////////////////////////////////////////// DRAW
@@ -108,20 +114,25 @@ pub fn update_gameplay(context: &mut GameContext) {
     clear_background(BEIGE);       
 
     // draw_circle(525.0, 500.0, 25.0, GREEN);
-    draw_base(&mut context.player_base);
+    // draw_base(&mut context.player_base);
 
+    /*
     for creature in context.creatures.iter_mut() {
         draw_creature(creature);
     }
+    */
 
     if context.debug_mode {
         draw_grid_test(50.0, 21);
         draw_rectangle(0.0, 0.0, 50.0, 50.0, GREEN);
         // For each creature, we want to draw their collider here
+        /*
         for creature in context.creatures.iter_mut() {
             creature.collider.debug_draw();
         }
-        context.player_base.collider.debug_draw();
+        context.player_base.base_collider.debug_draw();
+        context.player_base.fire_range_collider.debug_draw();
+        */ 
     }
 
     // Here we draw the game to a render texture, then draw that texture to the screen

@@ -47,7 +47,7 @@ impl Collider for RectCollider {
     }
 
     fn debug_draw(&self) {
-        let debug_color = Color::new(255.0, 0.0, 255.0, 1.0);
+        let debug_color = Color::new(255.0, 0.0, 255.0, 0.5);
         draw_rectangle(self.x, self.y, self.width, self.height, debug_color);
     }
 }
@@ -75,7 +75,7 @@ impl Collider for CircleCollider {
     }
 
     fn debug_draw(&self) {
-        let debug_color = Color::new(255.0, 0.0, 255.0, 1.0);
+        let debug_color = Color::new(255.0, 0.0, 255.0, 0.5);
         draw_circle(self.center.x,self.center.y, self.radius, debug_color);
     }
 }
