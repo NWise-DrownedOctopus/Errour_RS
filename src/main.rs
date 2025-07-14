@@ -4,10 +4,6 @@ mod components;
 mod systems;
 mod assets;
 
-use crate::components::collider::CircleCollider;
-use crate::components::animation::Animator;
-
-use crate::assets::animations::{enemy1_idel_animation, player_base_idel_animation};
 // May Need Refactoring
 mod utils;
 mod errour_ui;
@@ -21,8 +17,10 @@ use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use utils::GameContext;
 
-use crate::assets::art_assets::GameArtAssets;
+// use crate::assets::art_assets::GameArtAssets;
 use crate::components::base::PlayerBase;
+use crate::assets::art_assets::GameArtAssets;
+
 
 
 #[macroquad::main("main_menu")]
@@ -35,33 +33,6 @@ async fn main() {
     camera_view_rt.texture.set_filter(FilterMode::Nearest);
 
     let art_assets = GameArtAssets::load().await;
-
-    let player_base = PlayerBase {
-        pos: vec2(525.0, 500.0),
-        fire_speed: 3.0,
-        rot: 0.0,
-        rot_speed: 3.0,
-        size: 30.0,
-        // target: None,
-        base_collider: CircleCollider {
-            center: vec2(525.0, 500.0),
-            radius: 25.0,
-        },
-        collided: false,
-        animator: Animator {
-            texture: &art_assets.player_base_texture,
-            frame_width: 48.0,
-            frame_height: 48.0,
-            columns: 4,
-            animation: player_base_idel_animation(),
-            shadow_offset: 3.0,
-        },
-        health: 100.0,
-        fire_range_collider: CircleCollider {
-            center: vec2(525.0, 500.0),
-            radius: 00.0,
-        },
-    };
     
     let mut context = GameContext {
         window_skin: init_ui_skin().clone(),
@@ -76,8 +47,26 @@ async fn main() {
             ..Default::default()
         },
         game_camera_move_speed: 5.0,
-        // creatures: Vec::new(),
-        // player_base,
+
+        // Componenet Storage
+        positions: Vec::new(),
+        velocities: Vec::new(),
+        rotations: Vec::new(),
+        rotational_velocities: Vec::new(),
+        sizes: Vec::new(),
+        targets: Vec::new(),
+        collided_flags: Vec::new(),
+        healths: Vec::new(),
+        damages: Vec::new(),
+        dead_flags: Vec::new(),
+        colliders: Vec::new(),
+        animations: Vec::new(),
+        sprite_sheets: Vec::new(),
+        art_assets: art_assets,
+
+        // Indices of entities 
+        creature_ids: Vec::new(),
+        player_base: None,
     };
 
     // Here we are spawning in 10 creatures at random locations
@@ -113,6 +102,9 @@ async fn main() {
     }
 
     */
+    // Here we initilize our player_base entity
+
+    context.player_base = Some(PlayerBase::init(&mut context));
     
     loop {    
         // Here I need to figure out how to render to the web

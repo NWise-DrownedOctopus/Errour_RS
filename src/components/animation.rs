@@ -1,5 +1,7 @@
 use macroquad::prelude::*;
 
+use crate::assets::art_assets::SpriteID;
+
 pub struct Animation {
     pub start_frame: usize,
     pub frame_count: usize,
@@ -8,15 +10,15 @@ pub struct Animation {
     pub timer: f32,
 }
 
-pub struct Animator<'a> {
-    pub texture: &'a Texture2D,
+pub struct SpriteSheet {
+    pub texture_id: SpriteID,
     pub frame_width: f32,
     pub frame_height: f32,
     pub columns: usize,
-    pub animation: Animation,
     pub shadow_offset: f32,
 }
 
+/*
 impl<'a> Animator<'a> {
     // This function will check how much time as passed since the last frame, and then update to the next frame
     // if the frame time is larger than the frame time.
@@ -66,3 +68,4 @@ impl<'a> Animator<'a> {
         
     }
 }
+*/

@@ -1,24 +1,31 @@
 use macroquad::prelude::*;
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub enum SpriteID {
+    Enemy,
+    PlayerBase,
+    Ground,
+}
 
 pub struct GameArtAssets {
-    pub enemy_texture: Texture2D,
-    pub player_base_texture: Texture2D,
+    textures: [Texture2D; 3],
 }
 
 impl GameArtAssets {
+    pub fn get(&self, id: SpriteID) -> &Texture2D {
+        &self.textures[id as usize]
+    }
+
     pub async fn load() -> Self {
-        let enemy_texture = load_texture("art/vindex/enemies_01.png").await.unwrap();
-        enemy_texture.set_filter(FilterMode::Nearest);
-
-        let player_base_texture = load_texture("art/errour/player_base_01.png").await.unwrap();
-        player_base_texture.set_filter(FilterMode::Nearest); 
-
-        let ground_texture = load_texture("art/environment/spots.png").await.unwrap();
-        ground_texture.set_filter(FilterMode::Nearest);
+        let enemy = load_texture("art/vindex/enemies_01.png").await.unwrap();
+        let player_base = load_texture("art/errour/player_base_01.png").await.unwrap();  
+        let ground = load_texture("art/environment/spots.png").await.unwrap();
+        
+        enemy.set_filter(FilterMode::Nearest);
+        player_base.set_filter(FilterMode::Nearest); 
+        ground.set_filter(FilterMode::Nearest);
 
         Self {
-            enemy_texture,
-            player_base_texture,
+            textures: [enemy, player_base, ground],
         }
     }
 }

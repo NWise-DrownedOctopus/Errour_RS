@@ -5,6 +5,7 @@ use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent,
 use crate::utils::{draw_grid_test};
 // use crate::vindex::{draw_creature};
 // use crate::base::{draw_base, update_player_base_target};
+use crate::systems::render::{draw_animated_entity, animation_system};
 
 pub enum AppState {
     MainMenu,
@@ -115,6 +116,12 @@ pub fn update_gameplay(context: &mut GameContext) {
 
     // draw_circle(525.0, 500.0, 25.0, GREEN);
     // draw_base(&mut context.player_base);
+
+    // Here we handel our animation system
+    animation_system(context);
+    if let Some(base) = &context.player_base {
+        draw_animated_entity(context, base.pos_index, base.animation_index, base.sprite_sheet_index);
+    }    
 
     /*
     for creature in context.creatures.iter_mut() {

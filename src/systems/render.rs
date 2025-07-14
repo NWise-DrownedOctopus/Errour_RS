@@ -1,14 +1,59 @@
 use macroquad::prelude::*;
 
+use crate::{utils::GameContext};
+use crate::assets::art_assets::SpriteID;
+
 // This function should handle drawing the entierty of the game state. It will need refernce to each manager
 pub fn draw_game() {
 
 }
 
-// Refactor 
-/*
-pub fn draw_creature(creature: &mut Creature) {
-    creature.animator.update();
-    creature.collider.center = Vec2::new(creature.pos.x, creature.pos.y);
-    creature.animator.draw(creature.pos);
-}*/
+pub fn draw_animated_entity(context: &GameContext, position_index: usize, anim_index: usize, sprite_sheet_index: usize) {
+    let pos = context.positions[position_index];
+    let anim = &context.animations[anim_index];
+    let sprite = &context.sprite_sheets[sprite_sheet_index];
+
+    let frame_index = anim.start_frame + anim.current_frame;
+    let x = (frame_index % sprite.columns) as f32 * sprite.frame_width;
+    let y = (frame_index / sprite.columns) as f32 * sprite.frame_height;
+    let source = Rect::new(x,y, sprite.frame_width, sprite.frame_height);
+    let texture = context.art_assets.get(sprite.texture_id);    
+
+    // First We draw the shadow for the creature flying
+    draw_texture_ex(
+        // added & here to borrow, but not sure why I needed to borrow
+        texture,
+        pos.x - (sprite.frame_height/2.0) - sprite.shadow_offset,
+        pos.y - (sprite.frame_width/2.0) - sprite.shadow_offset,
+         Color::new(0.0, 0.0, 0.0, 0.1),
+        DrawTextureParams {
+            source: Some(source),
+            flip_y: true,
+            ..Default::default()
+        },
+    );
+
+    // After Shadow draw creature sprite on top
+    draw_texture_ex(
+        // added & here to borrow, but not sure why I needed to borrow
+        texture,
+        pos.x - (sprite.frame_height/2.0),
+        pos.y - (sprite.frame_width/2.0),
+        WHITE,
+        DrawTextureParams {
+            source: Some(source),
+            flip_y: true,
+            ..Default::default()
+        },
+    );
+}
+
+pub fn animation_system(context: &mut GameContext) {
+    for animation in &mut context.animations {
+        animation.timer += get_frame_time(); // NOTE::Do I need to worry about some being at different times becasuse they are called sequentially??
+        if animation.timer > animation.frame_time {
+            animation.timer = 0.0;
+            animation.current_frame = (animation.current_frame + 1) % animation.frame_count;
+        }
+    }
+}

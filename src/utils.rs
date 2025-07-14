@@ -3,8 +3,11 @@ const VIRTUAL_WIDTH: i32 = 1920;
 const VIRTUAL_HEIGHT: i32 = 1080;
 
 use macroquad::window::{request_new_screen_size};
-use crate::components::common::{Position, Velocity, Rotation, RotationalVelocity, Size, Target, Collided, Health, Damage, Dead};
-use crate::components::creature::{CreatureAnimator, CreatureCollider};
+use crate::assets::art_assets::GameArtAssets;
+use crate::components::base::PlayerBase;
+use crate::components::collider::CircleCollider;
+use crate::components::common::{Velocity, Rotation, RotationalVelocity, Size, Target, Collided, Health, Damage, Dead};
+use crate::components::animation::{Animation, SpriteSheet};
 // Needs Refactor
 // use crate::base::PlayerBase;
 use crate::game_manager::AppState;
@@ -13,7 +16,7 @@ use macroquad::ui::{Skin};
 // Needs Refactor
 // use crate::vindex::Creature;
 
-pub struct GameContext<'a> {
+pub struct GameContext {
     pub window_skin: Skin,
     pub debug_mode: bool,
     pub app_state: AppState,
@@ -22,7 +25,7 @@ pub struct GameContext<'a> {
     pub game_camera_move_speed: f32,
 
     // Componenet Storage
-    pub positions: Vec<Position>,
+    pub positions: Vec<Vec2>,
     pub velocities: Vec<Velocity>,
     pub rotations: Vec<Rotation>,
     pub rotational_velocities: Vec<RotationalVelocity>,
@@ -32,11 +35,14 @@ pub struct GameContext<'a> {
     pub healths: Vec<Health>,
     pub damages: Vec<Damage>,
     pub dead_flags: Vec<Dead>,
-    pub colliders: Vec<CreatureCollider>,
-    pub animators: Vec<CreatureAnimator<'a>>,
+    pub colliders: Vec<CircleCollider>,
+    pub animations: Vec<Animation>,
+    pub sprite_sheets: Vec<SpriteSheet>,
+    pub art_assets: GameArtAssets,
 
-    // Group of specific entity types
+    // Indices of entities
     pub creature_ids: Vec<usize>,
+    pub player_base: Option<PlayerBase>,
 }
 
 pub fn scale_screen() {
