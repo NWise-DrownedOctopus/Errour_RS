@@ -15,13 +15,11 @@ use errour_ui::{init_ui_skin};
 use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
+use crate::managers::creature_manager::CreatureManager;
 use utils::GameContext;
 
 // use crate::assets::art_assets::GameArtAssets;
-use crate::components::base::PlayerBase;
 use crate::assets::art_assets::GameArtAssets;
-
-
 
 #[macroquad::main("main_menu")]
 async fn main() {
@@ -38,6 +36,8 @@ async fn main() {
         window_skin: init_ui_skin().clone(),
         debug_mode: false,
         app_state: AppState::MainMenu,
+        in_game_phase: None,
+        level_config: None,
         game_state: GameState::None,
         game_camera: Camera2D {
             offset: vec2(0.0, 0.0),
@@ -47,6 +47,9 @@ async fn main() {
             ..Default::default()
         },
         game_camera_move_speed: 5.0,
+
+        // Managers
+        creature_manager: CreatureManager::new(),
 
         // Componenet Storage
         positions: Vec::new(),
@@ -65,46 +68,8 @@ async fn main() {
         art_assets: art_assets,
 
         // Indices of entities 
-        creature_ids: Vec::new(),
         player_base: None,
-    };
-
-    // Here we are spawning in 10 creatures at random locations
-    /* NEEDS REFACTOR
-    for _ in 0..10 {
-        let pos = Vec2::new(rand::gen_range(-1., 1.), rand::gen_range(-1., 1.))
-        .normalize() * screen_width().min(screen_height()) / 2.;
-
-        context.creatures.push(Creature {
-            pos,
-            speed: 0.5,
-            rot: 0.,
-            rot_speed: rand::gen_range(-2., 2.),
-            size: screen_width().min(screen_height()) / 10.,
-            target: vec2(525.0, 500.0),
-            collided: false,
-            animator: Animator {
-                texture: &art_assets.enemy_texture,
-                animation: enemy1_idel_animation(),
-                frame_width: 48.0,
-                frame_height: 48.0,
-                columns: 3,
-                shadow_offset: 25.0,
-            },
-            collider: CircleCollider {
-                center: Vec2::new(pos.x, pos.y),
-                radius: 12.0,
-            },
-            damage: 10.0,
-            health: 10.0,
-            dead: false,
-        })
-    }
-
-    */
-    // Here we initilize our player_base entity
-
-    context.player_base = Some(PlayerBase::init(&mut context));
+    };    
     
     loop {    
         // Here I need to figure out how to render to the web

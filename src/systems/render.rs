@@ -1,12 +1,6 @@
 use macroquad::prelude::*;
 
 use crate::{utils::GameContext};
-use crate::assets::art_assets::SpriteID;
-
-// This function should handle drawing the entierty of the game state. It will need refernce to each manager
-pub fn draw_game() {
-
-}
 
 pub fn draw_animated_entity(context: &GameContext, position_index: usize, anim_index: usize, sprite_sheet_index: usize) {
     let pos = context.positions[position_index];

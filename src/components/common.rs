@@ -1,6 +1,5 @@
 use macroquad::prelude::*;
 
-pub struct Position(pub Vec2);
 pub struct Velocity(pub f32);
 pub struct Rotation(pub f32);
 pub struct RotationalVelocity(pub f32);

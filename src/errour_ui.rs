@@ -17,6 +17,13 @@ pub enum SettingsUIEvent {
     BackClicked,
 }
 
+pub enum CampaignHubUIEvent {
+    None,
+    Level1,
+    Level2,
+    Level3,
+}
+
 pub enum GameUIEvent {
     None,
     PauseClicked,
@@ -90,6 +97,37 @@ pub fn draw_main_menu(context: &mut GameContext) -> MainMenuUIEvent {
             .ui(ui)
         {
             event = MainMenuUIEvent::QuitClicked;
+        }            
+    });
+
+    event
+}
+
+pub fn draw_campaign_hub(context: &mut GameContext) -> CampaignHubUIEvent {
+    let mut event = CampaignHubUIEvent::None;
+
+    root_ui().push_skin(&context.window_skin);
+
+    root_ui().window(hash!(), vec2(710., 200.), vec2(500., 700.), |ui| {
+        if widgets::Button::new("Level 1")
+            .position(vec2(200.0, 20.0))
+            .ui(ui)
+        {
+            event = CampaignHubUIEvent::Level1;
+        }    
+
+        if widgets::Button::new("Level 2")
+            .position(vec2(200.0, 60.0))
+            .ui(ui)
+        {
+            event = CampaignHubUIEvent::Level2;
+        }
+
+        if widgets::Button::new("Level 3")
+            .position(vec2(200.0, 100.0))
+            .ui(ui)
+        {
+            event = CampaignHubUIEvent::Level3;
         }            
     });
 
@@ -171,10 +209,6 @@ pub fn draw_post_mission_screen(context: &mut GameContext) {
 }
 
 pub fn draw_loadout_menu(context: &mut GameContext) {
-    root_ui().push_skin(&context.window_skin);
-}
-
-pub fn draw_campaign_hub(context: &mut GameContext) {
     root_ui().push_skin(&context.window_skin);
 }
 

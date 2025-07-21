@@ -1,4 +1,7 @@
 use macroquad::prelude::*;
+use serde::{Deserialize, Serialize};
+use std::fs;
+
 const VIRTUAL_WIDTH: i32 = 1920;
 const VIRTUAL_HEIGHT: i32 = 1080;
 
@@ -12,17 +15,30 @@ use crate::components::animation::{Animation, SpriteSheet};
 // use crate::base::PlayerBase;
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
+use crate::managers::creature_manager::CreatureManager;
 use macroquad::ui::{Skin};
 // Needs Refactor
 // use crate::vindex::Creature;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InGamePhase {
+    Awake,
+    Start,
+    Update,
+}
 
 pub struct GameContext {
     pub window_skin: Skin,
     pub debug_mode: bool,
     pub app_state: AppState,
+    pub in_game_phase: Option<InGamePhase>,
+    pub level_config: Option<LevelConfig>,
     pub game_state: GameState,
     pub game_camera: Camera2D,
     pub game_camera_move_speed: f32,
+
+    // Managers
+    pub creature_manager: CreatureManager,
 
     // Componenet Storage
     pub positions: Vec<Vec2>,
@@ -41,7 +57,6 @@ pub struct GameContext {
     pub art_assets: GameArtAssets,
 
     // Indices of entities
-    pub creature_ids: Vec<usize>,
     pub player_base: Option<PlayerBase>,
 }
 
@@ -115,4 +130,43 @@ pub fn draw_grid_test(spacing: f32, range: i32) {
     // Draw origin axes
     draw_line(0.0, 0.0, 1050.0, 0.0, 2.0, RED); // X-axis
     draw_line(0.0, 0.0, 0.0, 1000.0, 2.0, BLUE); // Y-axis
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PlayerResources {
+    pub metal: u32,
+    pub xp: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SaveFile {
+    pub player_id: String,
+    pub current_level: u32,
+    pub open_levels: Vec<u32>,
+    pub player_resources: PlayerResources,
+    pub last_save_time: String, 
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LevelConfig {
+    pub level_id: u32,
+    pub name: String,
+    pub starting_resources: PlayerResources,
+    pub enemy_waves: Vec<EnemyWave>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct EnemyWave {
+    pub enemy_type: String,
+    pub count: u32,
+}
+
+fn load_save_file(path: &str) -> SaveFile {
+    let json = fs::read_to_string(path).expect("Failed to read save file");
+    serde_json::from_str(&json).expect("Failed to parse save file")
+}
+
+pub fn load_level_config(path: &str) -> LevelConfig {
+    let json = fs::read_to_string(path).expect("Failed to read level config");
+    serde_json::from_str(&json).expect("Failed to parse level config")
 }

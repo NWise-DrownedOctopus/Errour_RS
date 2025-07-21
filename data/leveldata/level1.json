@@ -1,0 +1,24 @@
+{
+  "level_id": 1,
+  "name": "Level 1",
+  "starting_resources": {
+    "metal": 100,
+    "xp": 0
+  },
+  "spawn_points": [
+    { "x": 100.0, "y": 200.0 },
+    { "x": 500.0, "y": 600.0 }
+  ],
+  "enemy_waves": [
+    {
+      "enemy_type": "grunt",
+      "count": 5,
+      "spawn_delay": 0
+    },
+    {
+      "enemy_type": "tank",
+      "count": 2,
+      "spawn_delay": 10
+    }
+  ]
+}

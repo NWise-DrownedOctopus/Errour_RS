@@ -6,7 +6,7 @@ use crate::assets::animations::player_base_idel_sprite_sheet;
 
 pub struct PlayerBase {
     pub pos_index: usize,
-    pub col_index: usize,
+    pub collider_index: usize,
     pub animation_index: usize,
     pub sprite_sheet_index: usize,
 }
@@ -20,7 +20,7 @@ impl PlayerBase {
         };
 
         let pos_index = context.positions.len();
-        let col_index = context.colliders.len();
+        let collider_index = context.colliders.len();
         context.positions.push(position);
         context.colliders.push(base_collider);
 
@@ -32,7 +32,7 @@ impl PlayerBase {
 
         Self { 
             pos_index,
-            col_index,
+            collider_index,
             animation_index,
             sprite_sheet_index,
         }
