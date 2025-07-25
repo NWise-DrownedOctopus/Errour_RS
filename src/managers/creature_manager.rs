@@ -51,7 +51,7 @@ impl CreatureManager {
         //push new index onto data vectors
         self.positions.push(spawn_pos);
         self.colliders.push(CircleCollider {
-            radius: 5.0,
+            radius: 12.0,
         });
         self.animations.push(enemy1_idel_animation());
         self.sprite_sheets.push(enemy1_idel_sprite_sheet());

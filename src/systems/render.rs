@@ -48,3 +48,12 @@ pub fn animation_system(context: &mut GameContext) {
         }
     }
 }
+
+pub fn debug_collider_draw(context: &mut GameContext) {
+    for creature in &context.creature_manager.creatures {
+        if context.creature_manager.dead_flags[creature.dead_flag_index].0 == true { continue; };
+        let pos = context.creature_manager.positions[creature.position_index];
+        let r = context.creature_manager.colliders[creature.collider_index].radius;
+        draw_circle(pos[0], pos[1], r, GREEN);
+    }
+}

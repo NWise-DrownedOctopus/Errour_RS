@@ -8,6 +8,7 @@ pub struct PlayerBase {
     pub pos: Vec2,
     pub health: u32,
     pub base_collider: CircleCollider,
+    pub base_targeting_collider: CircleCollider,
     pub animation: Animation,
     pub sprite_sheet: SpriteSheet,
 }
@@ -18,6 +19,7 @@ impl PlayerBase {
             pos: vec2(525.0, 500.0),
             health: 100,
             base_collider: CircleCollider {radius: 25.0},
+            base_targeting_collider: CircleCollider { radius: 150.0 },
             animation: player_base_idel_animation(),
             sprite_sheet: player_base_idel_sprite_sheet(),
         }

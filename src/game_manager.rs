@@ -7,7 +7,7 @@ use crate::systems::damage::{update_damage_system};
 use crate::utils::{update_camera_pos, GameContext, InGamePhase, load_level_config};
 use crate::utils::{draw_grid_test};
 
-use crate::systems::render::{draw_animated_entity, animation_system};
+use crate::systems::render::{draw_animated_entity, animation_system, debug_collider_draw};
 use crate::systems::movement::{movement_update};
 
 use crate::components::base::PlayerBase;
@@ -158,6 +158,7 @@ pub fn update(context: &mut GameContext) {
     if context.debug_mode {
         draw_grid_test(50.0, 21);
         draw_rectangle(0.0, 0.0, 50.0, 50.0, GREEN);
+        debug_collider_draw(context);
         // For each creature, we want to draw their collider here
         /*
         for creature in context.creatures.iter_mut() {
