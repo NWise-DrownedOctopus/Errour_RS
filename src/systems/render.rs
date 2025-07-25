@@ -1,12 +1,9 @@
 use macroquad::prelude::*;
 
 use crate::{utils::GameContext};
+use crate::components::animation::{Animation, SpriteSheet};
 
-pub fn draw_animated_entity(context: &GameContext, position_index: usize, anim_index: usize, sprite_sheet_index: usize) {
-    let pos = context.positions[position_index];
-    let anim = &context.animations[anim_index];
-    let sprite = &context.sprite_sheets[sprite_sheet_index];
-
+pub fn draw_animated_entity(context: &GameContext, pos: Vec2, anim: &Animation, sprite: &SpriteSheet) {
     let frame_index = anim.start_frame + anim.current_frame;
     let x = (frame_index % sprite.columns) as f32 * sprite.frame_width;
     let y = (frame_index / sprite.columns) as f32 * sprite.frame_height;
@@ -43,7 +40,7 @@ pub fn draw_animated_entity(context: &GameContext, position_index: usize, anim_i
 }
 
 pub fn animation_system(context: &mut GameContext) {
-    for animation in &mut context.animations {
+    for animation in &mut context.creature_manager.animations {
         animation.timer += get_frame_time(); // NOTE::Do I need to worry about some being at different times becasuse they are called sequentially??
         if animation.timer > animation.frame_time {
             animation.timer = 0.0;

@@ -3,6 +3,7 @@ mod managers;
 mod components;
 mod systems;
 mod assets;
+mod events;
 
 // May Need Refactoring
 mod utils;
@@ -16,6 +17,7 @@ use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, u
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use crate::managers::creature_manager::CreatureManager;
+use crate::managers::projectile_manager::ProjectileManager;
 use utils::GameContext;
 
 // use crate::assets::art_assets::GameArtAssets;
@@ -50,22 +52,13 @@ async fn main() {
 
         // Managers
         creature_manager: CreatureManager::new(),
+        projectile_manager: ProjectileManager::new(),
 
         // Componenet Storage
-        positions: Vec::new(),
-        velocities: Vec::new(),
-        rotations: Vec::new(),
-        rotational_velocities: Vec::new(),
-        sizes: Vec::new(),
-        targets: Vec::new(),
-        collided_flags: Vec::new(),
-        healths: Vec::new(),
-        damages: Vec::new(),
-        dead_flags: Vec::new(),
-        colliders: Vec::new(),
-        animations: Vec::new(),
-        sprite_sheets: Vec::new(),
         art_assets: art_assets,
+
+        // Events
+        events: Vec::new(),
 
         // Indices of entities 
         player_base: None,

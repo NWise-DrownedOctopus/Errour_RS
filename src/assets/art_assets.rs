@@ -4,10 +4,11 @@ pub enum SpriteID {
     Enemy,
     PlayerBase,
     Ground,
+    Projectile,
 }
 
 pub struct GameArtAssets {
-    textures: [Texture2D; 3],
+    textures: [Texture2D; 4],
 }
 
 impl GameArtAssets {
@@ -19,13 +20,15 @@ impl GameArtAssets {
         let enemy = load_texture("art/vindex/enemies_01.png").await.unwrap();
         let player_base = load_texture("art/errour/player_base_01.png").await.unwrap();  
         let ground = load_texture("art/environment/spots.png").await.unwrap();
+        let projectile = load_texture("art/vfx/projectiles_01.png").await.unwrap();
         
         enemy.set_filter(FilterMode::Nearest);
         player_base.set_filter(FilterMode::Nearest); 
         ground.set_filter(FilterMode::Nearest);
+        projectile.set_filter(FilterMode::Nearest);
 
         Self {
-            textures: [enemy, player_base, ground],
+            textures: [enemy, player_base, ground, projectile],
         }
     }
 }

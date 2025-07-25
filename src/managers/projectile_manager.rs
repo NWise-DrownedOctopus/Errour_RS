@@ -1,36 +1,34 @@
 use macroquad::prelude::*;
 
-use crate::components::creature::Creature;
-use crate::components::common::{Velocity, Rotation, RotationalVelocity, Health, Damage, Dead};
+use crate::components::projectile::Projectile;
+use crate::components::common::{Velocity, Rotation, RotationalVelocity, Damage, Dead};
 use crate::{components::{collider::CircleCollider}};
 use crate::components::animation::{Animation, SpriteSheet};
-use crate::assets::animations::enemy1_idel_animation;
-use crate::assets::animations::enemy1_idel_sprite_sheet;
+use crate::assets::animations::projectile_01_animation;
+use crate::assets::animations::projectile_01_sprite_sheet;
 
-pub struct CreatureManager {
-    pub creatures: Vec<Creature>,
+pub struct ProjectileManager {
+    pub projectiles: Vec<Projectile>,
     pub positions: Vec<Vec2>,
     pub velocities: Vec<Velocity>,
     pub rotations: Vec<Rotation>,
     pub rotational_velocities: Vec<RotationalVelocity>,
     pub colliders: Vec<CircleCollider>,
-    pub healths: Vec<Health>,
     pub damages: Vec<Damage>,
     pub animations: Vec<Animation>,
     pub sprite_sheets: Vec<SpriteSheet>,
     pub dead_flags: Vec<Dead>,
 }
 
-impl CreatureManager {
+impl ProjectileManager {
     pub fn new() -> Self {
         Self {
-            creatures: Vec::new(),
+            projectiles: Vec::new(),
             positions: Vec::new(),
             velocities: Vec::new(),
             rotations: Vec::new(),
             rotational_velocities: Vec::new(),
             colliders: Vec::new(),
-            healths: Vec::new(),
             damages: Vec::new(),
             animations: Vec::new(),
             sprite_sheets: Vec::new(),
@@ -51,13 +49,13 @@ impl CreatureManager {
         //push new index onto data vectors
         self.positions.push(spawn_pos);
         self.colliders.push(CircleCollider {
-            radius: 5.0,
+            radius: 1.0,
         });
-        self.animations.push(enemy1_idel_animation());
-        self.sprite_sheets.push(enemy1_idel_sprite_sheet());
+        self.animations.push(projectile_01_animation());
+        self.sprite_sheets.push(projectile_01_sprite_sheet());
         self.dead_flags.push(Dead(false));
 
-        self.creatures.push(Creature {
+        self.projectiles.push(Projectile {
             position_index,
             collider_index,
             animation_index,

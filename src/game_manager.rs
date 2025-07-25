@@ -1,11 +1,15 @@
 use macroquad::prelude::*;
-// use crate::collision::Collider;
-use crate::utils::{update_camera_pos, GameContext, InGamePhase, load_level_config};
+
 use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent, MainMenuUIEvent, SettingsUIEvent, draw_post_mission_screen, draw_loadout_menu, draw_campaign_hub, CampaignHubUIEvent};
+
+use crate::systems::collision::update_collision;
+use crate::systems::damage::{update_damage_system};
+use crate::utils::{update_camera_pos, GameContext, InGamePhase, load_level_config};
 use crate::utils::{draw_grid_test};
-// use crate::vindex::{draw_creature};
-// use crate::base::{draw_base, update_player_base_target};
+
 use crate::systems::render::{draw_animated_entity, animation_system};
+use crate::systems::movement::{movement_update};
+
 use crate::components::base::PlayerBase;
 
 pub enum AppState {
@@ -72,9 +76,9 @@ pub fn update_gameplay(context: &mut GameContext) {
             context.in_game_phase = Some(InGamePhase::Start);
         }
         InGamePhase::Start => {
-            if let Some(config) = &context.level_config {
+            if let Some(_config) = &context.level_config {
                 // Use config to spawn player, set resources, etc.
-                context.player_base = Some(PlayerBase::init(context));
+                context.player_base = Some(PlayerBase::new());
 
                 let screen_radius = screen_width().min(screen_height()) / 2.;
                 // Here we are spawning in 10 creatures at random locations
@@ -84,13 +88,7 @@ pub fn update_gameplay(context: &mut GameContext) {
                     let pos = Vec2::new(rand::gen_range(-1., 1.), rand::gen_range(-1., 1.))
                     .normalize() * screen_radius;
 
-                    creature_manager.spawn(
-                        &mut context.positions,
-                        &mut context.colliders,
-                        &mut context.animations,
-                        &mut context.sprite_sheets,
-                        pos,
-                    );
+                    creature_manager.spawn(pos);
                 }
             }
             context.in_game_phase = Some(InGamePhase::Update);
@@ -104,30 +102,24 @@ pub fn update_gameplay(context: &mut GameContext) {
 }
 
 pub fn update(context: &mut GameContext) {
-     //////////////////////////////////////////////////////////////// UPDATE LOGIC
-    
-    // Move each enemy to thier targets
-    /* 
-    if matches!(context.game_state, GameState::Playing) {
-        for creature in context.creatures.iter_mut() {
-            // Move Each Creature
-            creature.pos = creature.pos.move_towards(creature.target, creature.speed);
-
-            // Check for Collsions with target
-            // For now it is assumed this is the base
-            // For now this is every frame
-            if creature.collider.intersects(&context.player_base.base_collider) {
-                context.player_base.health -= creature.damage;
-                creature.dead = true;
-            }
-        }
-    }
-    */
+     //////////////////////////////////////////////////////////////// UPDATE LOGIC  
     update_input(context);
 
-    context.creature_manager.update(
-        &mut context.positions,
+    movement_update(
+        &mut context.creature_manager,
         context.player_base.as_ref(),
+    );    
+
+    update_collision(
+        &mut context.creature_manager, 
+        context.player_base.as_ref(),
+        &mut context.events,
+    );
+
+    update_damage_system(
+        &mut context.events,
+        &mut context.creature_manager,
+        &mut context.player_base
     );
 
     // Here we update our player base targeting
@@ -144,21 +136,24 @@ pub fn update(context: &mut GameContext) {
     // We clear the background and set it to a default state
     clear_background(BEIGE);      
 
-    for i in 0..context.creature_manager.creatures.len() {
-        draw_animated_entity(context, context.creature_manager.creatures[i].position_index, context.creature_manager.creatures[i].animation_index, context.creature_manager.creatures[i].sprite_sheet_index);
-    }
+    for (_i, creature) in context.creature_manager.creatures.iter().enumerate() {
+        // Skip dead creatures
+        if context.creature_manager.dead_flags[creature.dead_flag_index].0 {
+            continue;
+        }
 
-    // draw_circle(525.0, 500.0, 25.0, GREEN);
-    // draw_base(&mut context.player_base);
+        let position = context.creature_manager.positions[creature.position_index];
+        let animation = &context.creature_manager.animations[creature.animation_index];
+        let sprite_sheet = &context.creature_manager.sprite_sheets[creature.sprite_sheet_index];
+
+        draw_animated_entity(context, position, animation, sprite_sheet);
+    }
 
     // Here we handel our animation system
     animation_system(context);
     if let Some(base) = &context.player_base {
-        draw_animated_entity(context, base.pos_index, base.animation_index, base.sprite_sheet_index);
+        draw_animated_entity(context, base.pos, &base.animation, &base.sprite_sheet);
     }    
-
-
-    
 
     if context.debug_mode {
         draw_grid_test(50.0, 21);

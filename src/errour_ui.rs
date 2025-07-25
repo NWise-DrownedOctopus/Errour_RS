@@ -195,7 +195,10 @@ pub fn draw_game_ui(context: &mut GameContext) -> GameUIEvent {
         }
 
         // Refactor
-        // ui.label(None, &format!("Current Health = {}", context.player_base.health));
+        if let Some(base) = context.player_base.as_mut() { 
+            let health_text = base.health;
+            ui.label(None, &format!("Current Health = {}", health_text));
+        }       
     });
 
     // Bottom Bar

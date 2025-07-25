@@ -1,44 +1,38 @@
 use macroquad::prelude::*;
 
-use crate::{components::{collider::CircleCollider}, utils::GameContext};
+use crate::{components::{animation::Animation, animation::SpriteSheet, collider::CircleCollider}};
 use crate::assets::animations::player_base_idel_animation;
 use crate::assets::animations::player_base_idel_sprite_sheet;
 
 pub struct PlayerBase {
-    pub pos_index: usize,
-    pub collider_index: usize,
-    pub animation_index: usize,
-    pub sprite_sheet_index: usize,
+    pub pos: Vec2,
+    pub health: u32,
+    pub base_collider: CircleCollider,
+    pub animation: Animation,
+    pub sprite_sheet: SpriteSheet,
 }
 
 impl PlayerBase {
-    pub fn init(context: &mut GameContext) -> Self {
-        let position = vec2(525.0, 500.0);
-        let base_collider = CircleCollider {
-            center: vec2(525.0, 500.0),
-            radius: 25.0,
-        };
+    pub fn new() -> Self {
+        Self {
+            pos: vec2(525.0, 500.0),
+            health: 100,
+            base_collider: CircleCollider {radius: 25.0},
+            animation: player_base_idel_animation(),
+            sprite_sheet: player_base_idel_sprite_sheet(),
+        }
 
-        let pos_index = context.positions.len();
-        let collider_index = context.colliders.len();
-        context.positions.push(position);
-        context.colliders.push(base_collider);
+    }
 
-        let animation_index = context.animations.len();
-        context.animations.push(player_base_idel_animation());
+    pub fn take_damage(&mut self, damage: u32){
+        self.health -= damage;
 
-        let sprite_sheet_index = context.sprite_sheets.len();
-        context.sprite_sheets.push(player_base_idel_sprite_sheet());
-
-        Self { 
-            pos_index,
-            collider_index,
-            animation_index,
-            sprite_sheet_index,
+        if self.health <= 0 {
+            self.health = 0;
         }
     }
 }
-
+    
 // Needs Refactor
 /*
 pub fn update_player_base_target(context: &mut GameContext) {
@@ -62,33 +56,4 @@ pub fn update_player_base_target(context: &mut GameContext) {
         println!("Current target is at: {:?}", creature.pos);
     }    
 }
-
-    ///// DELETE THIS
-
-    let player_base = PlayerBase {
-        pos: vec2(525.0, 500.0),
-        fire_speed: 3.0,
-        rot: 0.0,
-        rot_speed: 3.0,
-        size: 30.0,
-        // target: None,
-        base_collider: CircleCollider {
-            center: vec2(525.0, 500.0),
-            radius: 25.0,
-        },
-        collided: false,
-        animator: Animator {
-            texture: &art_assets.player_base_texture,
-            frame_width: 48.0,
-            frame_height: 48.0,
-            columns: 4,
-            animation: player_base_idel_animation(),
-            shadow_offset: 3.0,
-        },
-        health: 100.0,
-        fire_range_collider: CircleCollider {
-            center: vec2(525.0, 500.0),
-            radius: 00.0,
-        },
-    };
 */

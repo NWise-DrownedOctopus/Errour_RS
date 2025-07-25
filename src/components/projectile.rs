@@ -1,4 +1,4 @@
-pub struct Creature {
+pub struct Projectile {
     pub position_index: usize,
     pub collider_index: usize,
     pub animation_index: usize,

@@ -42,3 +42,23 @@ pub fn player_base_idel_sprite_sheet() -> SpriteSheet {
             shadow_offset: 3.0,
         }
 }
+
+pub fn projectile_01_animation() -> Animation {
+    Animation {
+        start_frame: 9,
+        frame_count: 1,
+        frame_time: 1.0,
+        current_frame: 0,
+        timer: 0.0
+    }
+}
+
+pub fn projectile_01_sprite_sheet() -> SpriteSheet {
+    SpriteSheet {
+            texture_id: SpriteID::Enemy,
+            frame_width: 48.0,
+            frame_height: 48.0,
+            columns: 4,
+            shadow_offset: 3.0,
+        }
+}

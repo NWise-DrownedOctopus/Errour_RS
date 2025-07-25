@@ -6,19 +6,18 @@ const VIRTUAL_WIDTH: i32 = 1920;
 const VIRTUAL_HEIGHT: i32 = 1080;
 
 use macroquad::window::{request_new_screen_size};
+
+use crate::events::GameEvent;
+
 use crate::assets::art_assets::GameArtAssets;
 use crate::components::base::PlayerBase;
-use crate::components::collider::CircleCollider;
-use crate::components::common::{Velocity, Rotation, RotationalVelocity, Size, Target, Collided, Health, Damage, Dead};
-use crate::components::animation::{Animation, SpriteSheet};
+
 // Needs Refactor
-// use crate::base::PlayerBase;
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
 use crate::managers::creature_manager::CreatureManager;
+use crate::managers::projectile_manager::ProjectileManager;
 use macroquad::ui::{Skin};
-// Needs Refactor
-// use crate::vindex::Creature;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InGamePhase {
@@ -39,22 +38,13 @@ pub struct GameContext {
 
     // Managers
     pub creature_manager: CreatureManager,
+    pub projectile_manager: ProjectileManager,
 
     // Componenet Storage
-    pub positions: Vec<Vec2>,
-    pub velocities: Vec<Velocity>,
-    pub rotations: Vec<Rotation>,
-    pub rotational_velocities: Vec<RotationalVelocity>,
-    pub sizes: Vec<Size>,
-    pub targets: Vec<Target>,
-    pub collided_flags: Vec<Collided>,
-    pub healths: Vec<Health>,
-    pub damages: Vec<Damage>,
-    pub dead_flags: Vec<Dead>,
-    pub colliders: Vec<CircleCollider>,
-    pub animations: Vec<Animation>,
-    pub sprite_sheets: Vec<SpriteSheet>,
     pub art_assets: GameArtAssets,
+
+    // Events
+    pub events: Vec<GameEvent>,
 
     // Indices of entities
     pub player_base: Option<PlayerBase>,
