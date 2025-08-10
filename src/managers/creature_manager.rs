@@ -7,6 +7,8 @@ use crate::components::animation::{Animation, SpriteSheet};
 use crate::assets::animations::enemy1_idel_animation;
 use crate::assets::animations::enemy1_idel_sprite_sheet;
 
+use crate::events::GameEvent;
+
 pub struct CreatureManager {
     pub creatures: Vec<Creature>,
     pub positions: Vec<Vec2>,
@@ -38,8 +40,10 @@ impl CreatureManager {
         }
     }
 
-    pub fn spawn(&mut self,
-        spawn_pos: Vec2
+    pub fn spawn(
+        &mut self,
+        spawn_pos: Vec2,
+        health: f32,
     ) {
         // Grab index at end of vector
         let position_index = self.positions.len();
@@ -47,6 +51,7 @@ impl CreatureManager {
         let animation_index = self.animations.len();
         let sprite_sheet_index = self.sprite_sheets.len();
         let dead_flag_index = self.dead_flags.len();
+        let health_index = self.healths.len();
 
         //push new index onto data vectors
         self.positions.push(spawn_pos);
@@ -56,6 +61,7 @@ impl CreatureManager {
         self.animations.push(enemy1_idel_animation());
         self.sprite_sheets.push(enemy1_idel_sprite_sheet());
         self.dead_flags.push(Dead(false));
+        self.healths.push(Health(health));
 
         self.creatures.push(Creature {
             position_index,
@@ -63,7 +69,36 @@ impl CreatureManager {
             animation_index,
             sprite_sheet_index,
             dead_flag_index,
+            health_index,
         });
+    }
+
+    pub fn damage_creature (
+        &mut self,
+        creature_index: usize,
+        dmg: f32,
+    ) {
+        self.healths[self.creatures[creature_index].health_index].0 -= dmg;
+    }
+
+    pub fn process_dead_creatures(&mut self, events: &mut Vec<GameEvent>) {
+        let mut to_destroy = Vec::new();
+
+        // Lets find out units we need to destroy
+        for (i, creature) in self.creatures.iter().enumerate() {    
+            let health = self.healths[creature.health_index].0;
+            let is_dead = self.dead_flags[creature.dead_flag_index].0;
+
+            if health <= 0.0 && !is_dead {
+                to_destroy.push(i);                
+            }
+        }
+
+        // Now lets destroy them
+        for i in to_destroy {
+            self.destroy(i);
+            events.push(GameEvent::CreatureDied { creature_index: i });
+        }
     }
 
     pub fn destroy(&mut self, index: usize) {

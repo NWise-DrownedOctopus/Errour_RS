@@ -16,6 +16,7 @@ use errour_ui::{init_ui_skin};
 use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
+use crate::managers::attack_manager::AttackManager;
 use crate::managers::creature_manager::CreatureManager;
 use crate::managers::projectile_manager::ProjectileManager;
 use utils::GameContext;
@@ -53,6 +54,7 @@ async fn main() {
         // Managers
         creature_manager: CreatureManager::new(),
         projectile_manager: ProjectileManager::new(),
+        attack_manager: AttackManager::new(),
 
         // Componenet Storage
         art_assets: art_assets,

@@ -1,10 +1,12 @@
 use crate::events::GameEvent;
 use crate::managers::creature_manager::CreatureManager;
 use crate::components::base::PlayerBase;
+use crate::managers::projectile_manager::{self, ProjectileManager};
 
 pub fn update_damage_system(
     events: &mut Vec<GameEvent>,
     creature_manager: &mut CreatureManager,
+    projectile_manager: &mut ProjectileManager,
     player_base: &mut Option<PlayerBase>,
 ) {
     // Here we handle damage events
@@ -20,6 +22,20 @@ pub fn update_damage_system(
                 } else {
                     eprintln!("Tried to damage base, but it doesn't exist!");
                 }
+            }
+
+            GameEvent::ProjectileHitCreature { creature_index, projectile_index } => {
+                // Damage Creature
+                if creature_index < creature_manager.creatures.len() {
+                    creature_manager.damage_creature(creature_index, projectile_manager.projectiles[projectile_index].dmg);
+                }                
+
+                // Destroy Projectile
+                projectile_manager.destroy(projectile_index);
+            }
+
+            GameEvent::CreatureDied { creature_index } => {
+                // A Creature Has Died, Horray
             }
         }
     }

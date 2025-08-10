@@ -56,4 +56,11 @@ pub fn debug_collider_draw(context: &mut GameContext) {
         let r = context.creature_manager.colliders[creature.collider_index].radius;
         draw_circle(pos[0], pos[1], r, GREEN);
     }
+
+    for projectile in &context.projectile_manager.projectiles {
+        if context.projectile_manager.dead_flags[projectile.dead_flag_index].0 == true { continue; };
+        let pos = context.projectile_manager.positions[projectile.position_index];
+        let r = context.projectile_manager.colliders[projectile.collider_index].radius;
+        draw_circle(pos[0], pos[1], r, GREEN);
+    }
 }

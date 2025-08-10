@@ -1,16 +1,18 @@
 use macroquad::prelude::*;
 
 use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent, MainMenuUIEvent, SettingsUIEvent, draw_post_mission_screen, draw_loadout_menu, draw_campaign_hub, CampaignHubUIEvent};
-
+//Components//
+use crate::components::base::PlayerBase;
+//Managers//
+use crate::managers::creature_manager;
+//Systems//
 use crate::systems::collision::update_collision;
 use crate::systems::damage::{update_damage_system};
-use crate::utils::{update_camera_pos, GameContext, InGamePhase, load_level_config};
-use crate::utils::{draw_grid_test};
-
 use crate::systems::render::{draw_animated_entity, animation_system, debug_collider_draw};
 use crate::systems::movement::{movement_update};
-
-use crate::components::base::PlayerBase;
+//Utils//
+use crate::utils::{load_level_config, update_camera_pos, GameContext, InGamePhase};
+use crate::utils::{draw_grid_test};
 
 pub enum AppState {
     MainMenu,
@@ -77,8 +79,16 @@ pub fn update_gameplay(context: &mut GameContext) {
         }
         InGamePhase::Start => {
             if let Some(_config) = &context.level_config {
-                // Use config to spawn player, set resources, etc.
-                context.player_base = Some(PlayerBase::new());
+                let player_base = PlayerBase::new();
+
+                context.attack_manager.register_attacker(
+                    player_base.fire_cooldown,
+                    player_base.range,
+                    player_base.attack_type,
+                    player_base.pos,
+                );
+
+                context.player_base = Some(player_base);
 
                 let screen_radius = screen_width().min(screen_height()) / 2.;
                 // Here we are spawning in 10 creatures at random locations
@@ -87,8 +97,9 @@ pub fn update_gameplay(context: &mut GameContext) {
                 for _ in 0..10 {
                     let pos = Vec2::new(rand::gen_range(-1., 1.), rand::gen_range(-1., 1.))
                     .normalize() * screen_radius;
-
-                    creature_manager.spawn(pos);
+                
+                    let creature_health = 1.0;
+                    creature_manager.spawn(pos, creature_health);
                 }
             }
             context.in_game_phase = Some(InGamePhase::Update);
@@ -107,26 +118,32 @@ pub fn update(context: &mut GameContext) {
 
     movement_update(
         &mut context.creature_manager,
+        &mut context.projectile_manager,
         context.player_base.as_ref(),
     );    
 
     update_collision(
         &mut context.creature_manager, 
+        &mut context.projectile_manager,
         context.player_base.as_ref(),
         &mut context.events,
     );
 
-    update_damage_system(
-        &mut context.events,
-        &mut context.creature_manager,
-        &mut context.player_base
+    // Update attack solutions for play controlled entities (Right now only Base)
+    let target_positions = &context.creature_manager.positions;
+    let target_colliders = &context.creature_manager.colliders;
+    let valid_target_flags = &context.creature_manager.dead_flags;
+
+    context.attack_manager.update_attack_solutions(
+        target_positions,
+        target_colliders,
+        valid_target_flags
     );
 
-    // Here we update our player base targeting
-    // update_player_base_target(context);
-
-    // For each creatrure that collded with the base, remove them from vec
-    // context.creatures.retain(|creature| !creature.dead);
+    // Fire at valid targets
+    let mut attack_commands = Vec::new();
+    context.attack_manager.fire_ready_attackers( &mut attack_commands);
+    context.projectile_manager.process_attack_commands(&attack_commands);
     
 
     //////////////////////////////////////////////////////////////// DRAW
@@ -136,6 +153,13 @@ pub fn update(context: &mut GameContext) {
     // We clear the background and set it to a default state
     clear_background(BEIGE);      
 
+    // Here we handel our animation system
+    animation_system(context);
+    if let Some(base) = &context.player_base {
+        draw_animated_entity(context, base.pos, &base.animation, &base.sprite_sheet);
+    }  
+
+    // Here we draw all of the creatures in the creature manager
     for (_i, creature) in context.creature_manager.creatures.iter().enumerate() {
         // Skip dead creatures
         if context.creature_manager.dead_flags[creature.dead_flag_index].0 {
@@ -149,11 +173,19 @@ pub fn update(context: &mut GameContext) {
         draw_animated_entity(context, position, animation, sprite_sheet);
     }
 
-    // Here we handel our animation system
-    animation_system(context);
-    if let Some(base) = &context.player_base {
-        draw_animated_entity(context, base.pos, &base.animation, &base.sprite_sheet);
-    }    
+    // Here we draw all of the projectiles in the projectile maanger
+    for (_i, projectile) in context.projectile_manager.projectiles.iter().enumerate() {
+        // Skip dead Projectiles
+        if context.projectile_manager.dead_flags[projectile.dead_flag_index].0 {
+            continue;
+        }
+
+        let position = context.projectile_manager.positions[projectile.position_index];
+        let animation = &context.projectile_manager.animations[projectile.animation_index];
+        let sprite_sheet = &context.projectile_manager.sprite_sheets[projectile.sprite_sheet_index];
+
+        draw_animated_entity(context, position, animation, sprite_sheet);
+    }      
 
     if context.debug_mode {
         draw_grid_test(50.0, 21);
@@ -186,6 +218,22 @@ pub fn update(context: &mut GameContext) {
 
 pub fn late_update(context: &mut GameContext) {
     //////////////////////////////////////////////////////////////// UPDATE UI  
+    
+    // Here we calculate all of the damage done this frame, and apply it to targets
+    update_damage_system(
+        &mut context.events,
+        &mut context.creature_manager,
+        &mut context.projectile_manager,
+        &mut context.player_base
+    );
+
+    // We should check if any projectiles no longer have a valid target, and destroy them
+    context.projectile_manager.process_hanging_projectiles(&mut context.creature_manager);
+
+    // Here we check for any targets that should be removed because they should have died this frame.
+    context.creature_manager.process_dead_creatures(&mut context.events);
+
+    // Here we draw our UI
     let event = draw_game_ui(context);
 
     match event {

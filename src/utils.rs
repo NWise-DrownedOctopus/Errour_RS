@@ -15,6 +15,7 @@ use crate::components::base::PlayerBase;
 // Needs Refactor
 use crate::game_manager::AppState;
 use crate::game_manager::GameState;
+use crate::managers::attack_manager::AttackManager;
 use crate::managers::creature_manager::CreatureManager;
 use crate::managers::projectile_manager::ProjectileManager;
 use macroquad::ui::{Skin};
@@ -39,6 +40,7 @@ pub struct GameContext {
     // Managers
     pub creature_manager: CreatureManager,
     pub projectile_manager: ProjectileManager,
+    pub attack_manager: AttackManager,
 
     // Componenet Storage
     pub art_assets: GameArtAssets,
@@ -48,6 +50,41 @@ pub struct GameContext {
 
     // Indices of entities
     pub player_base: Option<PlayerBase>,
+}
+
+#[derive(Copy, Clone)]
+pub struct Timer {
+    pub elapsed: f32,
+    pub duration: f32,
+    pub done: bool,
+}
+
+impl Timer {
+    pub fn new(duration: f32) -> Self {
+        Self {
+            elapsed: 0.0,
+            duration,
+            done: false,
+        }
+    }
+
+    pub fn update(&mut self) {
+        if !self.done {
+            self.elapsed += get_frame_time();
+            if self.elapsed >= self.duration {
+                self.done = true;
+            }
+        }
+    }
+
+    pub fn is_ready(&self) -> bool {
+        self.done
+    }
+
+    pub fn reset(&mut self) {
+        self.elapsed = 0.0;
+        self.done = false;
+    }
 }
 
 pub fn scale_screen() {

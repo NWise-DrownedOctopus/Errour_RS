@@ -4,4 +4,5 @@ pub struct Creature {
     pub animation_index: usize,
     pub sprite_sheet_index: usize,
     pub dead_flag_index: usize,
+    pub health_index: usize,
 }

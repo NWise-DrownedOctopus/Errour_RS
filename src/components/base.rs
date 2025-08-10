@@ -4,11 +4,18 @@ use crate::{components::{animation::Animation, animation::SpriteSheet, collider:
 use crate::assets::animations::player_base_idel_animation;
 use crate::assets::animations::player_base_idel_sprite_sheet;
 
+use crate::managers::attack_manager::AttackType;
+
+use crate::utils::{Timer};
+
 pub struct PlayerBase {
     pub pos: Vec2,
     pub health: u32,
     pub base_collider: CircleCollider,
-    pub base_targeting_collider: CircleCollider,
+    pub range: CircleCollider,
+    pub fire_cooldown: Timer,
+    pub attack_type: AttackType,
+    pub target_index: Option<usize>,
     pub animation: Animation,
     pub sprite_sheet: SpriteSheet,
 }
@@ -19,11 +26,13 @@ impl PlayerBase {
             pos: vec2(525.0, 500.0),
             health: 100,
             base_collider: CircleCollider {radius: 25.0},
-            base_targeting_collider: CircleCollider { radius: 150.0 },
+            range: CircleCollider { radius: 150.0 },
+            fire_cooldown: Timer::new(1.0),
+            attack_type: AttackType::Projectile,
+            target_index: None,
             animation: player_base_idel_animation(),
             sprite_sheet: player_base_idel_sprite_sheet(),
         }
-
     }
 
     pub fn take_damage(&mut self, damage: u32){
