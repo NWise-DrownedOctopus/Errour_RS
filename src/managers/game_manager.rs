@@ -30,7 +30,7 @@ pub enum GameState {
     GameOver,
 }
 
-pub fn update_main_menu(context: GameContext) {
+pub fn update_main_menu(context: &mut GameContext) {
     // Here we handle input for changes
     let event = draw_main_menu(context);
     

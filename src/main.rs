@@ -8,17 +8,19 @@ mod events;
 // May Need Refactoring
 mod utils;
 mod errour_ui;
-mod game_manager;
 
 use macroquad::prelude::*;
 
 use errour_ui::{init_ui_skin};
-use game_manager::{update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
-use crate::game_manager::AppState;
-use crate::game_manager::GameState;
+use crate::managers::game_manager::{GameState, AppState, update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
 use crate::managers::attack_manager::AttackManager;
 use crate::managers::creature_manager::CreatureManager;
 use crate::managers::projectile_manager::ProjectileManager;
+use crate::managers::input_manager::{InputEvent, InputManager};
+
+use crate::systems::input::collect_input;
+
+
 use utils::GameContext;
 
 // use crate::assets::art_assets::GameArtAssets;
@@ -78,6 +80,8 @@ async fn main() {
         // Indices of entities 
         player_base: None,
     };    
+
+    let mut input_manager = InputManager::new();
     
     loop {    
         // Here I need to figure out how to render to the web
@@ -88,6 +92,8 @@ async fn main() {
             continue;        
         }      
         */
+
+        collect_input(&mut input_manager);
 
         handle_app_state(&mut context);  
 
