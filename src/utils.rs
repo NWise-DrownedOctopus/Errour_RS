@@ -87,10 +87,35 @@ impl Timer {
     }
 }
 
-pub fn scale_screen() {
+pub fn scale_screen() -> (f32, f32, f32) {
+    let sw = screen_width();
+    let sh = screen_height();
+
+    // Here we find the minium of either our actual screen width / virtual screen width or hight
+    // This will be the scale we use to resize our window to match the device resolution
+    let scale = (sw / VIRTUAL_WIDTH as f32).min(sh / VIRTUAL_HEIGHT as f32);
+
+    // Offesets are used to create letterboxing if needed
+    // We devide by two to make it even on either side of the window
+    let offset_x = (sw - VIRTUAL_WIDTH as f32 * scale) / 2.0;
+    let offset_y = (sh - VIRTUAL_HEIGHT as f32 * scale) / 2.0;
+
+    // OLD MAY NEED TO BE DELETED
     // Here we need to determine if our virtual screen size fits on the current screen, and how to scale it it
     // First lets check if the virtual screen is too large
     request_new_screen_size(VIRTUAL_WIDTH as f32, VIRTUAL_HEIGHT as f32);
+
+    (scale, offset_x, offset_y)    
+}
+
+pub fn to_screen_cords (x: f32, y: f32) -> (f32, f32) {
+    let (scale, offset_x, offset_y) = scale_screen();
+    (offset_x + x * scale, offset_y + y * scale)
+}
+
+pub fn to_virtual_cords (sx: f32, sy: f32) -> (f32, f32) {
+    let (scale, offset_x, offset_y) = scale_screen();
+    ((sx - offset_x) / scale, (sy - offset_y) / scale)
 }
    
 pub fn check_screen_size() -> bool {
