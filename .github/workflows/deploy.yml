@@ -31,7 +31,7 @@ jobs:
       - name: Generate wasm-bindgen output
         run: |
           mkdir -p deploy
-          wasm-bindgen target/wasm32-unknown-unknown/release/errour.wasm \
+          wasm-bindgen target/wasm32-unknown-unknown/release/errour_bg.wasm \
             --out-dir deploy --web
 
       - name: Prepare HTML and nojekyll
