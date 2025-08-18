@@ -24,8 +24,21 @@ use utils::GameContext;
 // use crate::assets::art_assets::GameArtAssets;
 use crate::assets::art_assets::GameArtAssets;
 
-#[macroquad::main("main_menu")]
+#[cfg(target_os = "windows")]
+fn fix_windows_dpi() {
+    use std::ptr;
+    use winapi::um::winuser::SetProcessDPIAware;
+
+    unsafe {
+        SetProcessDPIAware();
+    }
+}
+
+#[macroquad::main("Errour")]
 async fn main() {
+    #[cfg(target_os = "windows")]
+    fix_windows_dpi();
+    
     utils::check_screen_size();    
     utils::scale_screen();    
 
