@@ -13,8 +13,8 @@ use crate::assets::art_assets::GameArtAssets;
 use crate::components::base::PlayerBase;
 
 // Needs Refactor
-use crate::game_manager::AppState;
-use crate::game_manager::GameState;
+use crate::managers::game_manager::AppState;
+use crate::managers::game_manager::GameState;
 use crate::managers::attack_manager::AttackManager;
 use crate::managers::creature_manager::CreatureManager;
 use crate::managers::projectile_manager::ProjectileManager;
@@ -50,6 +50,20 @@ pub struct GameContext {
 
     // Indices of entities
     pub player_base: Option<PlayerBase>,
+}
+
+impl GameContext {
+    pub fn handle_mouse_move (&mut self, x: f32, y: f32 ) {
+        // Here we handle the mouse moving event
+    }
+
+    pub fn handle_mouse_down (&mut self, button: MouseButton ) {
+        // Here we handle the mouse button event
+    }
+
+    pub fn handle_key_press (&mut self, key: KeyCode) {
+        // Here we handle the button press event
+    }
 }
 
 #[derive(Copy, Clone)]
