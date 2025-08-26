@@ -3,3 +3,4 @@ pub mod render;
 pub mod movement;
 pub mod damage;
 pub mod input;
+pub mod inventory;

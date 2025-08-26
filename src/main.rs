@@ -19,6 +19,7 @@ use crate::managers::projectile_manager::ProjectileManager;
 use crate::managers::input_manager::{InputEvent, InputManager};
 
 use crate::systems::input::collect_input;
+use crate::systems::inventory::Inventory;
 
 
 use utils::GameContext;
@@ -28,7 +29,6 @@ use crate::assets::art_assets::GameArtAssets;
 
 #[cfg(target_os = "windows")]
 fn fix_windows_dpi() {
-    use std::ptr;
     use winapi::um::winuser::SetProcessDPIAware;
 
     unsafe {
@@ -70,6 +70,9 @@ async fn main() {
         creature_manager: CreatureManager::new(),
         projectile_manager: ProjectileManager::new(),
         attack_manager: AttackManager::new(),
+
+        // Systems
+        inventory: Inventory::new(),
 
         // Componenet Storage
         art_assets: art_assets,

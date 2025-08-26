@@ -18,6 +18,9 @@ use crate::managers::game_manager::GameState;
 use crate::managers::attack_manager::AttackManager;
 use crate::managers::creature_manager::CreatureManager;
 use crate::managers::projectile_manager::ProjectileManager;
+
+use crate::systems::inventory::Inventory;
+
 use macroquad::ui::{Skin};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -41,6 +44,9 @@ pub struct GameContext {
     pub creature_manager: CreatureManager,
     pub projectile_manager: ProjectileManager,
     pub attack_manager: AttackManager,
+
+    // Systems
+    pub inventory: Inventory,
 
     // Componenet Storage
     pub art_assets: GameArtAssets,

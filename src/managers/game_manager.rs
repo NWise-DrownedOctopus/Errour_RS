@@ -4,7 +4,7 @@ use crate::errour_ui::{draw_game_ui, draw_main_menu, draw_settings, GameUIEvent,
 //Components//
 use crate::components::base::PlayerBase;
 //Managers//
-use crate::managers::creature_manager;
+
 //Systems//
 use crate::systems::collision::update_collision;
 use crate::systems::damage::{update_damage_system};
@@ -99,7 +99,8 @@ pub fn update_gameplay(context: &mut GameContext) {
                     .normalize() * screen_radius;
                 
                     let creature_health = 1.0;
-                    creature_manager.spawn(pos, creature_health);
+                    let drop_table_id = 1; // PLACEHOLDER
+                    creature_manager.spawn(pos, creature_health, drop_table_id);
                 }
             }
             context.in_game_phase = Some(InGamePhase::Update);

@@ -21,6 +21,7 @@ pub struct CreatureManager {
     pub animations: Vec<Animation>,
     pub sprite_sheets: Vec<SpriteSheet>,
     pub dead_flags: Vec<Dead>,
+    pub drop_table_ids: Vec<u16>,
 }
 
 impl CreatureManager {
@@ -36,7 +37,8 @@ impl CreatureManager {
             damages: Vec::new(),
             animations: Vec::new(),
             sprite_sheets: Vec::new(),
-            dead_flags: Vec::new(),            
+            dead_flags: Vec::new(),
+            drop_table_ids: Vec::new(),    
         }
     }
 
@@ -44,6 +46,7 @@ impl CreatureManager {
         &mut self,
         spawn_pos: Vec2,
         health: f32,
+        drop_table_id: u16,
     ) {
         // Grab index at end of vector
         let position_index = self.positions.len();
@@ -52,6 +55,7 @@ impl CreatureManager {
         let sprite_sheet_index = self.sprite_sheets.len();
         let dead_flag_index = self.dead_flags.len();
         let health_index = self.healths.len();
+        let drop_table_id_index = self.drop_table_ids.len();
 
         //push new index onto data vectors
         self.positions.push(spawn_pos);
@@ -62,6 +66,7 @@ impl CreatureManager {
         self.sprite_sheets.push(enemy1_idel_sprite_sheet());
         self.dead_flags.push(Dead(false));
         self.healths.push(Health(health));
+        self.drop_table_ids.push(drop_table_id);
 
         self.creatures.push(Creature {
             position_index,
@@ -70,6 +75,7 @@ impl CreatureManager {
             sprite_sheet_index,
             dead_flag_index,
             health_index,
+            drop_table_id_index,
         });
     }
 

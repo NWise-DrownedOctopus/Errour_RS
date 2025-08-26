@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::components::projectile::Projectile;
 use crate::components::common::{Velocity, Rotation, RotationalVelocity, Damage, Dead};
 use crate::managers::attack_manager::AttackCommand;
-use crate::managers::creature_manager::{self, CreatureManager};
+use crate::managers::creature_manager::{CreatureManager};
 use crate::{components::{collider::CircleCollider}};
 use crate::components::animation::{Animation, SpriteSheet};
 use crate::assets::animations::projectile_01_animation;

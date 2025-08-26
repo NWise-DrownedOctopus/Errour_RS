@@ -1,7 +1,7 @@
 use crate::events::GameEvent;
 use crate::managers::creature_manager::CreatureManager;
 use crate::components::base::PlayerBase;
-use crate::managers::projectile_manager::{self, ProjectileManager};
+use crate::managers::projectile_manager::{ProjectileManager};
 
 pub fn update_damage_system(
     events: &mut Vec<GameEvent>,
