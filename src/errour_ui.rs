@@ -33,13 +33,7 @@ pub fn init_ui_skin() -> Skin{
     let skin1 = {
         let button_style = root_ui().style_builder()
             .background_margin(RectOffset::new(5.0, 5.0, 5.0, 5.0))
-            .background(
-                Image::from_file_with_format(
-                    include_bytes!("../art/ui/window_background_1.png"),
-                    None,
-                )
-                .unwrap(),
-            )
+            .background(Color::from_rgba(50, 50, 50, 200))
             .margin(RectOffset::new(0.0, 0.0, 0.0, 0.0))
             .color_selected(Color::from_rgba(255, 255, 255, 255))
             .color_inactive(Color::from_rgba(255, 255, 255, 255))
@@ -49,13 +43,7 @@ pub fn init_ui_skin() -> Skin{
 
         let window_style = root_ui()
             .style_builder()
-            .background(
-                Image::from_file_with_format(
-                    include_bytes!("../art/ui/window_background_1.png"),
-                    None,
-                )
-                .unwrap(),
-            )
+            .background(Color::from_rgba(50, 50, 50, 200))
             .background_margin(RectOffset::new(20.0, 20.0, 20.0, 20.0))
             .margin(RectOffset::new(-20.0, -30.0, 0.0, 0.0))
             .color_selected(Color::from_rgba(255, 255, 255, 255))
