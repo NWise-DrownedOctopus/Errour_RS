@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master  # or main, depending on your default branch
+permissions:
+    contents: write
 
 jobs:
   build:
