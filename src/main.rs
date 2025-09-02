@@ -10,6 +10,8 @@ mod utils;
 mod errour_ui;
 
 use macroquad::prelude::*;
+use macroquad::window::Conf;
+use miniquad::conf::{Platform, WebGLVersion};
 
 use errour_ui::{init_ui_skin};
 use crate::managers::game_manager::{GameState, AppState, update_main_menu, update_campaign_hub, update_loadout_menu, update_gameplay, update_post_mission_screen, update_settings};
@@ -27,16 +29,19 @@ use utils::GameContext;
 // use crate::assets::art_assets::GameArtAssets;
 use crate::assets::art_assets::GameArtAssets;
 
-/* fn window_conf() -> Conf {
+fn web_window_conf() -> Conf {
     Conf {
         window_title: "Errour".to_string(),
         fullscreen: false,
         window_width: 1920,
         window_height: 1080,
-        webgl2: true,  // <- force WebGL2
+        platform: Platform {
+            webgl_version: WebGLVersion::WebGL2, // <- force WebGL2
+            ..Default::default()
+        },  
         ..Default::default()
     }
-} */
+}
 
 #[cfg(target_os = "windows")]
 fn fix_windows_dpi() {
@@ -61,7 +66,7 @@ async fn main() {
         1000,
         RenderTargetParams {
             sample_count: 0, // <--- avoids MRT resolve path
-            depth: true,     // <--- give WebGL a depth buffer so FBO is complete
+            depth: true,     // <--- give WebGL a depth buffer
         },
     );
     camera_view_rt.texture.set_filter(FilterMode::Nearest);
