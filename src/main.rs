@@ -27,6 +27,17 @@ use utils::GameContext;
 // use crate::assets::art_assets::GameArtAssets;
 use crate::assets::art_assets::GameArtAssets;
 
+/* fn window_conf() -> Conf {
+    Conf {
+        window_title: "Errour".to_string(),
+        fullscreen: false,
+        window_width: 1920,
+        window_height: 1080,
+        webgl2: true,  // <- force WebGL2
+        ..Default::default()
+    }
+} */
+
 #[cfg(target_os = "windows")]
 fn fix_windows_dpi() {
     use winapi::um::winuser::SetProcessDPIAware;
@@ -36,7 +47,7 @@ fn fix_windows_dpi() {
     }
 }
 
-#[macroquad::main("Errour")]
+#[macroquad::main("Error")]
 async fn main() {
     #[cfg(target_os = "windows")]
     fix_windows_dpi();
@@ -45,7 +56,14 @@ async fn main() {
     utils::scale_screen();    
 
     let rt_size = vec2(1050.0, 1000.0);
-    let camera_view_rt = render_target(1050, 1000);
+    let camera_view_rt = render_target_ex(
+        1050,
+        1000,
+        RenderTargetParams {
+            sample_count: 0, // <--- avoids MRT resolve path
+            depth: true,     // <--- give WebGL a depth buffer so FBO is complete
+        },
+    );
     camera_view_rt.texture.set_filter(FilterMode::Nearest);
 
     let art_assets = GameArtAssets::load().await;
