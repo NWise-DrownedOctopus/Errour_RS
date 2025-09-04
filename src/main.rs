@@ -29,6 +29,24 @@ use utils::GameContext;
 // use crate::assets::art_assets::GameArtAssets;
 use crate::assets::art_assets::GameArtAssets;
 
+#[cfg(target_os = "wasm32")]
+fn web_window_conf() -> Conf {
+    Conf {
+        window_title: "Errour".to_string(),
+        fullscreen: false,
+        window_width: 1920,
+        window_height: 1080,
+        high_dpi: true,  
+        window_resizable: true,
+        platform: Platform {
+            webgl_version: WebGLVersion::WebGL2, // <- force WebGL2
+            ..Default::default()
+        },  
+        ..Default::default()
+    }
+}
+
+#[cfg(target_os = "windows")]
 fn web_window_conf() -> Conf {
     Conf {
         window_title: "Errour".to_string(),
@@ -36,7 +54,6 @@ fn web_window_conf() -> Conf {
         window_width: 1920,
         window_height: 1080,
         platform: Platform {
-            webgl_version: WebGLVersion::WebGL2, // <- force WebGL2
             ..Default::default()
         },  
         ..Default::default()
