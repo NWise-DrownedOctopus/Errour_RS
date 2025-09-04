@@ -32,7 +32,7 @@ use crate::assets::art_assets::GameArtAssets;
 #[cfg(target_os = "wasm32")]
 fn web_window_conf() -> Conf {
     Conf {
-        window_title: "Errour".to_string(),
+        window_title: "Errour_Web".to_string(),
         fullscreen: false,
         window_width: 1920,
         window_height: 1080,
@@ -49,7 +49,7 @@ fn web_window_conf() -> Conf {
 #[cfg(target_os = "windows")]
 fn web_window_conf() -> Conf {
     Conf {
-        window_title: "Errour".to_string(),
+        window_title: "Errour_Windows".to_string(),
         fullscreen: false,
         window_width: 1920,
         window_height: 1080,
